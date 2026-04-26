@@ -22,10 +22,10 @@
     <header class="blood-red text-white py-6 shadow-xl">
         <div class="max-w-6xl mx-auto px-4 flex flex-col items-center text-center">
             <div class="flex justify-center items-center gap-6 mb-4">
-                <img src="https://github.com/Com-Adarsh/library-sheet/blob/main/abhimanyu.png" alt="ALS Logo" class="h-16 w-16 rounded-full border-2 border-white shadow-md">
-                <img src="https://github.com/Com-Adarsh/library-sheet/blob/main/sfi%20imsc%20logo.png" alt="SFI Logo" class="h-16 w-16 rounded-full border-2 border-white shadow-md">
+                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" alt="ALS Logo" class="h-16 w-16 rounded-full border-2 border-white shadow-md bg-white">
+                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/sfi%20imsc%20logo.png" alt="SFI Logo" class="h-16 w-16 rounded-full border-2 border-white shadow-md bg-white">
             </div>
-            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">
+            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight uppercase">
                 ABHIMANYU LEARNING SPACE
             </h1>
             <p class="text-sm md:text-lg font-semibold text-red-100 opacity-90">
@@ -35,70 +35,106 @@
     </header>
 
     <nav class="bg-white border-b sticky top-0 z-50 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 flex flex-wrap justify-between items-center h-16">
-            <div class="flex space-x-4 overflow-x-auto no-scrollbar">
+        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center h-16">
+            <div class="flex space-x-2 md:space-x-4 items-center overflow-x-auto no-scrollbar">
                 <button @click="typeFilter = 'All'" :class="navClass(typeFilter === 'All')">All</button>
                 <button @click="typeFilter = 'Textbook'" :class="navClass(typeFilter === 'Textbook')">Textbooks</button>
-                <button @click="typeFilter = 'Question Paper'" :class="navClass(typeFilter === 'Question Paper')">Question Papers</button>
-                <button @click="showAbout = true" class="text-gray-600 hover:text-red-700 px-3 py-2 font-medium text-sm">About</button>
+                <button @click="typeFilter = 'Question Paper'" :class="navClass(typeFilter === 'Question Paper')">PYQs</button>
+                <button @click="showAbout = true" class="text-gray-600 hover:text-red-700 px-2 py-2 font-medium text-sm">About</button>
             </div>
             
-            <div class="relative group">
-                <button class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
-                    Contact
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+            <div class="flex items-center gap-2">
+                <button @click="showUpload = true" class="bg-red-700 text-white px-3 md:px-5 py-2 rounded-full text-xs font-bold hover:bg-black transition shadow-lg">
+                    + UPLOAD
                 </button>
-                <div class="absolute right-0 mt-2 w-48 bg-white border rounded-xl shadow-xl hidden group-hover:block">
-                    <a href="https://instagram.com/sfi_imsc_subcommittee_cusat" target="_blank" class="block px-4 py-3 text-sm hover:bg-red-50 text-gray-700">Instagram</a>
-                    <a href="https://whatsapp.com/channel/https://whatsapp.com/channel/0029VaesYjiHgZWZT1NwWo1z" target="_blank" class="block px-4 py-3 text-sm hover:bg-red-50 text-gray-700">WhatsApp Channel</a>
+                <div class="relative group">
+                    <button class="bg-gray-100 text-gray-800 px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-1">
+                        Contact
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-white border rounded-xl shadow-xl hidden group-hover:block z-[60]">
+                        <a href="https://instagram.com/sfi_imsc_subcommittee_cusat" target="_blank" class="block px-4 py-3 text-sm hover:bg-red-50">Instagram</a>
+                        <a href="https://whatsapp.com/channel/0029VaesYjiHgZWZT1NwWo1z" target="_blank" class="block px-4 py-3 text-sm hover:bg-red-50">WhatsApp Channel</a>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
     <main class="max-w-6xl mx-auto px-4 mt-8 pb-20">
-        <div class="flex gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
+        <div class="flex gap-2 overflow-x-auto pb-4 mb-6 no-scrollbar">
             <button @click="semFilter = 'All'" :class="semClass(semFilter === 'All')">All Sem</button>
-            <button v-for="n in 10" :key="n" @click="semFilter = n.toString()" :class="semClass(semFilter === n.toString())">
-                S{{ n }}
-            </button>
+            <button v-for="n in 10" :key="n" @click="semFilter = n.toString()" :class="semClass(semFilter === n.toString())">S{{ n }}</button>
         </div>
 
-        <div class="mb-8">
-            <input v-model="searchQuery" type="text" placeholder="Search by title..." 
-                   class="w-full p-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-red-600 outline-none shadow-inner">
-        </div>
+        <input v-model="searchQuery" type="text" placeholder="Search by subject or title..." 
+               class="w-full p-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-red-600 outline-none shadow-inner mb-8">
 
         <div v-if="loading" class="text-center py-20">
             <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-red-700 mx-auto"></div>
-            <p class="mt-4 text-gray-600 font-medium italic">Fetching materials from SFI IMSc database...</p>
+            <p class="mt-4 text-gray-500 italic">Connecting to SFI IMSc Database...</p>
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div v-for="item in filteredResources" 
-                 class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border-l-4 border-blood-red group">
-                <div class="p-5">
-                    <div class="flex justify-between items-start mb-4">
-                        <span class="text-[10px] font-black bg-red-100 text-red-800 px-3 py-1 rounded-full uppercase tracking-tighter">Semester {{ item.Semester }}</span>
-                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ item.Type }}</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-red-700 transition-colors">{{ item.Title }}</h3>
-                    <a :href="item.Link" target="_blank" class="mt-6 w-full inline-flex justify-center items-center bg-red-700 text-white font-bold py-3 rounded-xl hover:bg-black transition-colors">
-                        DOWNLOAD PDF
-                    </a>
+            <div v-for="item in filteredResources" class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all border-l-4 border-blood-red p-5 group">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-[10px] font-black bg-red-100 text-red-800 px-3 py-1 rounded-full uppercase">Semester {{ item.Semester }}</span>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ item.Type }}</span>
                 </div>
+                <h3 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-red-700">{{ item.Title }}</h3>
+                <a :href="item.Link" target="_blank" class="mt-6 w-full inline-flex justify-center items-center bg-red-700 text-white font-bold py-3 rounded-xl hover:bg-black transition">
+                    VIEW PDF
+                </a>
             </div>
         </div>
     </main>
 
+    <div v-if="showUpload" class="fixed inset-0 bg-black bg-opacity-60 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-black text-blood-red uppercase tracking-tighter">Contribute Material</h2>
+                <button @click="showUpload = false" class="text-2xl">&times;</button>
+            </div>
+            <form @submit.prevent="submitForm" class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">Resource Title</label>
+                    <input v-model="newEntry.title" type="text" required placeholder="e.g. Distribution Theory Notes" class="w-full border rounded-lg p-2.5 outline-none focus:border-red-600">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Semester</label>
+                        <select v-model="newEntry.semester" class="w-full border rounded-lg p-2.5 outline-none focus:border-red-600">
+                            <option v-for="n in 10" :value="n">S{{ n }}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Category</label>
+                        <select v-model="newEntry.type" class="w-full border rounded-lg p-2.5 outline-none focus:border-red-600">
+                            <option>Textbook</option>
+                            <option>Question Paper</option>
+                            <option>Notes</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">Drive Link (Publicly Shared)</label>
+                    <input v-model="newEntry.link" type="url" required placeholder="https://drive.google.com/..." class="w-full border rounded-lg p-2.5 outline-none focus:border-red-600">
+                </div>
+                <button type="submit" :disabled="uploading" class="w-full bg-red-700 text-white font-bold py-3 rounded-xl hover:bg-black transition-colors disabled:bg-gray-400">
+                    {{ uploading ? 'SUBMITTING...' : 'ADD TO LIBRARY' }}
+                </button>
+            </form>
+        </div>
+    </div>
+
     <div v-if="showAbout" class="fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-8 relative">
             <button @click="showAbout = false" class="absolute top-4 right-4 text-2xl font-bold">&times;</button>
-            <h2 class="text-2xl font-black text-blood-red mb-4 uppercase">About the Library</h2>
+            <h2 class="text-2xl font-black text-blood-red mb-4 uppercase">About</h2>
             <p class="text-gray-700 leading-relaxed">
                 Abhimanyu Learning Space is a digital initiative by the SFI IMSc Sub-committee. 
-                This platform is designed to provide seamless access to academic resources, including 
-                textbooks and previous year question papers for all 10 semesters of the Integrated M.Sc program.
+                This platform provides seamless access to textbooks and previous year question papers 
+                for Integrated M.Sc students at CUSAT.
             </p>
         </div>
     </div>
@@ -107,6 +143,7 @@
 <script>
     const { createApp } = Vue;
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTSKlLQMEpcnLtAEpyjG85WjHNWPeKP2er_baGRjtjxsAUjFo7z7gu5aahKpmh0FN9O0nYtIh1dpQTq/pub?output=csv';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoitEj7xr467FGlaQMKl1woZz8CCneBxfriaBlPB5MHYSSvUH0yt9WSmkIibbBg_Ai/exec';
 
     createApp({
         data() {
@@ -116,7 +153,10 @@
                 searchQuery: '',
                 resources: [],
                 loading: true,
-                showAbout: false
+                showAbout: false,
+                showUpload: false,
+                uploading: false,
+                newEntry: { title: '', semester: 1, type: 'Notes', link: '' }
             }
         },
         computed: {
@@ -140,16 +180,31 @@
                     ? 'whitespace-nowrap bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-lg transform scale-105 transition-all' 
                     : 'whitespace-nowrap bg-white border text-gray-600 px-5 py-2 rounded-lg text-sm font-medium hover:border-red-400';
             },
+            async submitForm() {
+                this.uploading = true;
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: JSON.stringify(this.newEntry)
+                    });
+                    alert("Submission received! It will appear in the library shortly.");
+                    this.showUpload = false;
+                    this.newEntry = { title: '', semester: 1, type: 'Notes', link: '' };
+                } catch (e) {
+                    alert("Error submitting. Please check your connection.");
+                } finally {
+                    this.uploading = false;
+                }
+            },
             init() {
                 Papa.parse(SHEET_URL, {
                     download: true,
                     header: true,
                     complete: (res) => {
-                        // Filters out empty rows or rows without a Title
                         this.resources = res.data.filter(row => row.Title && row.Link);
                         this.loading = false;
-                    },
-                    error: () => { alert("Error connecting to database. Please check your internet."); }
+                    }
                 });
             }
         },
