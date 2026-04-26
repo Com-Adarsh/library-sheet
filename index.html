@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abhimanyu Learning Space | SFI IMSc</title>
+    
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png">
+
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: #f1f5f9; scroll-behavior: smooth; }
         .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -18,6 +20,8 @@
             background-attachment: fixed; background-size: cover; background-position: center;
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .card-hover:hover { transform: translateY(-8px); background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); }
         .success-toast { animation: slideUp 0.5s ease-out forwards; }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
@@ -25,55 +29,69 @@
 <body class="antialiased">
 
 <div id="app">
-    <header class="hero-bg pt-20 pb-24 text-center">
+    <header class="hero-bg pt-20 pb-24 shadow-2xl border-b border-white/10 text-center">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-center items-center gap-6 mb-8">
                 <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
                 <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/sfi%20imsc%20logo.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
             </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter uppercase mb-3">ABHIMANYU LEARNING SPACE</h1>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter uppercase mb-3 text-white">ABHIMANYU LEARNING SPACE</h1>
             <p class="text-sm md:text-xl text-red-200 font-black tracking-[0.2em] uppercase italic opacity-90">SFI IMSc Digital Library</p>
         </div>
     </header>
 
     <main class="max-w-6xl mx-auto px-4 -mt-12 pb-32">
         <div class="glass-card rounded-3xl shadow-2xl p-2 mb-10 flex flex-col md:flex-row items-center gap-2">
-            <input v-model="searchQuery" type="text" placeholder="Search textbooks, modules, or subjects..." class="w-full bg-transparent p-5 outline-none text-lg font-medium text-white placeholder-white/30">
+            <input v-model="searchQuery" type="text" placeholder="Search textbooks, modules, or subjects..." 
+                   class="w-full bg-transparent p-5 outline-none text-lg font-medium text-white placeholder-white/30">
             <div class="px-8 py-4 bg-red-700 text-white rounded-2xl font-black text-xs tracking-widest hidden md:block whitespace-nowrap">
                 {{ filteredResources.length }} RESOURCES
             </div>
         </div>
 
         <div class="space-y-4 mb-12">
-            <div class="flex gap-2 overflow-x-auto no-scrollbar"><button @click="semFilter = 'All'" :class="filterClass(semFilter === 'All')">All Sems</button><button v-for="n in 10" @click="semFilter = n.toString()" :class="filterClass(semFilter === n.toString())">S{{n}}</button></div>
-            <div class="flex gap-2 overflow-x-auto no-scrollbar"><button @click="typeFilter = 'All'" :class="filterClass(typeFilter === 'All')">📁 All Types</button><button v-for="t in ['Textbook', 'PYQ', 'Notes']" @click="typeFilter = t" :class="filterClass(typeFilter === t)">{{t}}s</button></div>
-            <div class="flex gap-2 overflow-x-auto no-scrollbar"><button @click="subjectFilter = 'All'" :class="filterClass(subjectFilter === 'All')">🎓 All Subjects</button><button v-for="sub in subjectStats" @click="subjectFilter = sub.name" :class="filterClass(subjectFilter === sub.name)">{{sub.name}} ({{sub.count}})</button></div>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar">
+                <button @click="semFilter = 'All'" :class="filterClass(semFilter === 'All')">All Sems</button>
+                <button v-for="n in 10" @click="semFilter = n.toString()" :class="filterClass(semFilter === n.toString())">SEM {{n}}</button>
+            </div>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar">
+                <button @click="typeFilter = 'All'" :class="filterClass(typeFilter === 'All')">📁 All Types</button>
+                <button v-for="t in ['Textbook', 'PYQ', 'Notes']" @click="typeFilter = t" :class="filterClass(typeFilter === t)">{{t}}s</button>
+            </div>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar">
+                <button @click="subjectFilter = 'All'" :class="filterClass(subjectFilter === 'All')">🎓 All Subjects</button>
+                <button v-for="sub in subjectStats" :key="sub.name" @click="subjectFilter = sub.name" :class="filterClass(subjectFilter === sub.name)">
+                    {{sub.name}} ({{sub.count}})
+                </button>
+            </div>
         </div>
 
-        <div v-if="loading" class="text-center py-24"><div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-700 mx-auto"></div></div>
+        <div v-if="loading" class="text-center py-24">
+            <div class="animate-spin rounded-full h-14 w-14 border-b-4 border-red-700 mx-auto"></div>
+            <p class="mt-6 text-red-200 font-black text-xs uppercase tracking-[0.3em]">Mapping Database...</p>
+        </div>
+
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div v-for="item in filteredResources" :key="item.id" class="glass-card rounded-[2.5rem] p-8 border-l-8 border-red-700 hover:bg-white/10 transition-all duration-300">
-                <div class="flex justify-between mb-6">
-                    <span class="text-[10px] font-black px-3 py-1 bg-red-700 text-white rounded-full uppercase">Sem {{item.semester}}</span>
-                    <span class="text-[10px] font-bold text-white/40 uppercase">{{item.type}}</span>
+            <div v-for="item in filteredResources" :key="item.id"
+                 class="glass-card rounded-[2.5rem] p-8 card-hover transition-all duration-300 border-l-8 border-red-700">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-[10px] font-black px-4 py-1.5 rounded-full bg-red-700 text-white uppercase">Sem {{item.semester}}</span>
+                    <span class="text-[11px] font-bold text-white/40 uppercase tracking-widest">{{item.type}}</span>
                 </div>
-                <h3 class="text-xl font-extrabold text-white leading-tight mb-2">{{item.title}}</h3>
-                <p class="text-red-300/60 text-[10px] font-black uppercase mb-8">{{item.subject}}</p>
+                <h3 class="text-2xl font-extrabold text-white leading-tight mb-2 min-h-[3rem]">{{item.title}}</h3>
+                <p class="text-red-300/60 text-[10px] font-bold uppercase tracking-widest mb-8">{{item.subject}}</p>
                 <div class="pt-6 border-t border-white/10">
-                    <a :href="item.link" target="_blank" class="text-red-400 font-black text-xs uppercase hover:text-white flex items-center gap-2">ACCESS RESOURCE →</a>
+                    <a :href="item.link" target="_blank" class="group inline-flex items-center gap-3 font-black text-xs text-red-400 tracking-widest uppercase hover:text-white transition-colors">
+                        Access Resource →
+                    </a>
                 </div>
             </div>
         </div>
     </main>
 
-    <div v-if="showSuccess" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] w-full max-w-md px-4">
-        <div class="glass-card bg-green-500/20 border-green-500/50 p-6 rounded-3xl text-center shadow-2xl success-toast">
-            <p class="text-white font-black uppercase tracking-widest text-sm">✅ Submission Successful</p>
-            <p class="text-white/70 text-xs mt-2">Resource sent to Subcommittee for review.</p>
-        </div>
-    </div>
-
-    <button @click="showUpload = true" class="fixed bottom-8 right-8 bg-red-700 text-white px-8 py-5 rounded-3xl shadow-2xl hover:scale-105 transition-all z-50 font-black uppercase tracking-widest text-xs">Contribute</button>
+    <button @click="showUpload = true" class="fixed bottom-8 right-8 bg-red-700 text-white px-8 py-5 rounded-3xl shadow-2xl hover:scale-105 transition-all z-50 font-black uppercase tracking-widest text-xs">
+        Contribute
+    </button>
 
     <div v-if="showUpload" class="fixed inset-0 bg-slate-900/95 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
         <div class="glass-card border-white/20 rounded-[3rem] max-w-xl w-full p-8 md:p-12 relative overflow-y-auto max-h-[90vh]">
@@ -83,11 +101,11 @@
             <div class="bg-white/5 rounded-2xl p-4 mb-6 text-[10px] leading-relaxed text-white/60 border border-white/10">
                 <p class="font-black text-red-400 mb-1">⚠️ GUIDE / നിർദ്ദേശം:</p>
                 <p>1. Google Drive ലിങ്ക് 'Anyone with the link can view' എന്ന് സെറ്റ് ചെയ്യുക.</p>
-                <p>2. Set your Drive link to 'Anyone with the link' before submitting.</p>
+                <p>2. Ensure Drive link is set to 'Anyone with the link' before submitting.</p>
             </div>
 
             <form @submit.prevent="submitForm" class="space-y-4">
-                <input v-model="newEntry.title" required placeholder="Resource Title (e.g. Real Analysis Notes)" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
+                <input v-model="newEntry.title" required placeholder="Resource Title" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
                 <div class="grid grid-cols-2 gap-4">
                     <select v-model="newEntry.semester" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
                         <option v-for="n in 10" :value="n" class="bg-slate-900">Sem {{n}}</option>
@@ -101,29 +119,62 @@
                 <input v-model="newEntry.subject" required placeholder="Subject (e.g. Mathematics)" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
                 <div class="space-y-2">
                     <input v-model="newEntry.link" @input="validateLink" required placeholder="Google Drive Link" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
-                    <p v-if="linkError" class="text-red-500 text-[10px] font-bold uppercase tracking-widest pl-2">Invalid Google Drive Link</p>
-                    <a v-if="newEntry.link && !linkError" :href="newEntry.link" target="_blank" class="inline-block text-[10px] font-black text-blue-400 uppercase tracking-widest pl-2">👁️ Preview Link</a>
+                    <p v-if="linkError" class="text-red-500 text-[10px] font-bold uppercase tracking-widest pl-2">Invalid Drive Link</p>
+                    <a v-if="newEntry.link && !linkError" :href="newEntry.link" target="_blank" class="text-[10px] font-black text-blue-400 uppercase tracking-widest pl-2">👁️ Preview Link</a>
                 </div>
                 <button type="submit" :disabled="uploading || linkError" class="w-full bg-red-700 text-white font-black py-5 rounded-2xl shadow-xl disabled:opacity-50">
-                    {{ uploading ? 'SENDING TO SUBCOMMITTEE...' : 'SUBMIT RESOURCE' }}
+                    {{ uploading ? 'SUBMITTING...' : 'SUBMIT TO SUBCOMMITTEE' }}
                 </button>
             </form>
         </div>
     </div>
+
+    <div v-if="showSuccess" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] w-full max-w-md px-4">
+        <div class="glass-card bg-green-500/20 border-green-500/50 p-6 rounded-3xl text-center shadow-2xl success-toast">
+            <p class="text-white font-black uppercase tracking-widest text-sm">✅ Submitted Successfully</p>
+        </div>
+    </div>
+
+    <footer class="glass-card border-t border-white/10 pt-20 pb-10 mt-20">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-16 mb-16">
+                <div>
+                    <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs mb-6">🏛️ About Us</h4>
+                    <p class="text-white/60 text-sm leading-relaxed font-medium">
+                        A digital initiative by the <span class="text-white">SFI IMSc Subcommittee</span>. Named in honor of Comrade Abhimanyu, this platform democratizes access to verified academic resources for every student.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs mb-6">📬 Contact</h4>
+                    <p class="text-white/60 text-sm font-bold tracking-tight italic mb-2">sfiimscsubcommittee25@gmail.com</p>
+                    <p class="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">CUSAT</p>
+                </div>
+                <div>
+                    <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs mb-6">🔗 Community</h4>
+                    <div class="flex flex-col gap-3">
+                        <a href="https://whatsapp.com/channel/0029VaesYjiHgZWZT1NwWo1z" target="_blank" class="glass-card px-5 py-3 rounded-2xl text-[11px] font-bold text-white uppercase hover:bg-red-700 text-center">WhatsApp</a>
+                        <a href="https://www.instagram.com/sfi_imsc_subcommittee_cusat" target="_blank" class="glass-card px-5 py-3 rounded-2xl text-[11px] font-bold text-white uppercase hover:bg-red-700 text-center">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-10 border-t border-white/5 text-center">
+                <p class="text-[10px] font-black text-white/20 uppercase tracking-[0.5em]">&copy; 2026 SFI IMSc Subcommittee • CUSAT</p>
+            </div>
+        </div>
+    </footer>
 </div>
 
 <script>
     const { createApp } = Vue;
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTSKlLQMEpcnLtAEpyjG85WjHNWPeKP2er_baGRjtjxsAUjFo7z7gu5aahKpmh0FN9O0nYtIh1dpQTq/pub?output=csv';
-    const GAS_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'; // PASTE YOUR URL HERE
+    const GAS_URL = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'; 
 
     createApp({
         data() {
             return {
                 semFilter: 'All', typeFilter: 'All', subjectFilter: 'All', searchQuery: '',
                 resources: [], loading: true, showUpload: false, uploading: false, showSuccess: false,
-                linkError: false,
-                newEntry: { title: '', semester: 1, type: 'Notes', subject: '', link: '' }
+                linkError: false, newEntry: { title: '', semester: 1, type: 'Notes', subject: '', link: '' }
             }
         },
         computed: {
@@ -143,21 +194,18 @@
         },
         methods: {
             filterClass(active) {
-                const base = 'whitespace-nowrap px-6 py-2.5 rounded-xl text-[10px] font-black uppercase transition-all border ';
-                return active ? 'bg-red-700 border-red-700 text-white shadow-lg' : 'bg-white/5 border-white/10 text-white/40 hover:text-white';
+                const base = 'whitespace-nowrap px-6 py-3 rounded-2xl text-[10px] font-black uppercase transition-all border ';
+                return active ? 'bg-red-700 border-red-700 text-white shadow-xl scale-105' : 'bg-white/5 border-white/10 text-white/40 hover:text-white';
             },
-            validateLink() {
-                this.linkError = this.newEntry.link && !this.newEntry.link.includes('drive.google.com');
-            },
+            validateLink() { this.linkError = this.newEntry.link && !this.newEntry.link.includes('drive.google.com'); },
             async submitForm() {
                 this.uploading = true;
                 try {
                     await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(this.newEntry) });
-                    this.showUpload = false;
-                    this.showSuccess = true;
+                    this.showUpload = false; this.showSuccess = true;
                     setTimeout(() => this.showSuccess = false, 5000);
                     this.newEntry = { title: '', semester: 1, type: 'Notes', subject: '', link: '' };
-                } catch (e) { alert("Submission failed. Check Console."); }
+                } catch (e) { alert("Error connecting to backend."); }
                 finally { this.uploading = false; }
             },
             fetchData() {
