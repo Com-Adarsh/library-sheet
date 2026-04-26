@@ -33,32 +33,41 @@
                 <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
                 <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/sfi%20imsc%20logo.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
             </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter uppercase mb-3">ABHIMANYU LEARNING SPACE</h1>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter uppercase mb-3 text-white">ABHIMANYU LEARNING SPACE</h1>
             <p class="text-sm md:text-xl text-red-200 font-black tracking-[0.2em] uppercase italic opacity-90">SFI IMSc Digital Library</p>
         </div>
     </header>
 
     <main class="max-w-6xl mx-auto px-4 -mt-12 pb-32">
         <div class="glass-card rounded-3xl shadow-2xl p-2 mb-10">
-            <input v-model="searchQuery" type="text" placeholder="Search textbooks, modules, or papers..." 
+            <input v-model="searchQuery" type="text" placeholder="Search textbooks, modules, or subjects..." 
                    class="w-full bg-transparent p-5 outline-none text-lg font-medium text-white placeholder-white/30">
         </div>
 
         <div class="flex gap-3 overflow-x-auto pb-4 no-scrollbar">
-            <button @click="semFilter = 'All'" :class="filterClass(semFilter === 'All')">All Semesters</button>
+            <button @click="semFilter = 'All'" :class="filterClass(semFilter === 'All')">All Sems</button>
             <button v-for="n in 10" :key="n" @click="semFilter = n.toString()" :class="filterClass(semFilter === n.toString())">SEM {{ n }}</button>
         </div>
 
-        <div class="flex gap-3 overflow-x-auto pb-12 no-scrollbar">
+        <div class="flex gap-3 overflow-x-auto pb-4 no-scrollbar">
             <button @click="typeFilter = 'All'" :class="filterClass(typeFilter === 'All')">📁 All Types</button>
             <button @click="typeFilter = 'Textbook'" :class="filterClass(typeFilter === 'Textbook')">📚 Textbooks</button>
             <button @click="typeFilter = 'PYQ'" :class="filterClass(typeFilter === 'PYQ')">📝 Question Papers</button>
             <button @click="typeFilter = 'Notes'" :class="filterClass(typeFilter === 'Notes')">✍️ Notes</button>
         </div>
 
+        <div class="flex gap-3 overflow-x-auto pb-12 no-scrollbar">
+            <button @click="subjectFilter = 'All'" :class="filterClass(subjectFilter === 'All')">🎓 All Subjects</button>
+            <button v-for="sub in subjectStats" :key="sub.name" 
+                    @click="subjectFilter = sub.name" 
+                    :class="filterClass(subjectFilter === sub.name)">
+                {{ sub.name }} <span class="ml-2 opacity-50 text-[9px]">({{ sub.count }})</span>
+            </button>
+        </div>
+
         <div v-if="loading" class="text-center py-24">
             <div class="animate-spin rounded-full h-14 w-14 border-b-4 border-red-700 mx-auto"></div>
-            <p class="mt-6 text-red-200 font-black text-xs uppercase tracking-[0.3em]">Syncing Library...</p>
+            <p class="mt-6 text-red-200 font-black text-xs uppercase tracking-[0.3em]">Mapping Database...</p>
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -72,7 +81,8 @@
                     <span class="text-[11px] font-bold text-white/40 uppercase tracking-widest">{{ item.type }}</span>
                 </div>
                 
-                <h3 class="text-2xl font-extrabold text-white leading-tight mb-8 min-h-[4rem]">{{ item.title }}</h3>
+                <h3 class="text-2xl font-extrabold text-white leading-tight mb-2 min-h-[3rem]">{{ item.title }}</h3>
+                <p class="text-red-300/60 text-[10px] font-bold uppercase tracking-widest mb-8">{{ item.subject }}</p>
 
                 <div class="pt-6 border-t border-white/10">
                     <a :href="item.link" target="_blank" rel="noopener noreferrer"
@@ -89,29 +99,24 @@
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-16 mb-16">
                 <div class="space-y-6">
-                    <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs">🏛️ About Abhimanyu Learning Space</h4>
+                    <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs">🏛️ About Us</h4>
                     <p class="text-white/60 text-sm leading-relaxed font-medium">
-                        A premier digital initiative by the <span class="text-white">SFI IMSc Subcommittee</span>. Named in honor of the legacy of Comrade Abhimanyu, this platform embodies the principle that knowledge is a collective right. We curate verified textbooks, PYQs, and notes to ensure academic excellence and equity for every student.
+                        A digital initiative by the <span class="text-white">SFI IMSc Subcommittee</span>. We believe knowledge is a collective right. Our mission is to democratize access to verified academic resources for every student.
                     </p>
                 </div>
-
                 <div class="space-y-6">
                     <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs">📬 Support</h4>
                     <p class="text-white/60 text-sm font-bold tracking-tight italic">sfiimscsubcommittee25@gmail.com</p>
-                    <div class="pt-2">
-                        <p class="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">Cochin University of Science and Technology</p>
-                    </div>
+                    <p class="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">Cochin University of Science and Technology</p>
                 </div>
-
                 <div class="space-y-6">
                     <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs">🔗 Community</h4>
                     <div class="flex flex-col gap-3">
-                        <a href="https://whatsapp.com/channel/0029VaesYjiHgZWZT1NwWo1z" target="_blank" class="glass-card px-5 py-3 rounded-2xl text-[11px] font-bold text-white uppercase hover:bg-red-700 transition-all text-center">Official WhatsApp</a>
+                        <a href="https://whatsapp.com/channel/0029VaesYjiHgZWZT1NwWo1z" target="_blank" class="glass-card px-5 py-3 rounded-2xl text-[11px] font-bold text-white uppercase hover:bg-red-700 transition-all text-center">WhatsApp Channel</a>
                         <a href="https://www.instagram.com/sfi_imsc_subcommittee_cusat" target="_blank" class="glass-card px-5 py-3 rounded-2xl text-[11px] font-bold text-white uppercase hover:bg-red-700 transition-all text-center">Instagram</a>
                     </div>
                 </div>
             </div>
-
             <div class="pt-10 border-t border-white/5 text-center">
                 <p class="text-[10px] font-black text-white/20 uppercase tracking-[0.5em]">
                     &copy; 2026 SFI IMSc Subcommittee • CUSAT
@@ -128,35 +133,43 @@
     createApp({
         data() {
             return {
-                semFilter: 'All',
-                typeFilter: 'All',
-                searchQuery: '',
-                resources: [],
-                loading: true
+                semFilter: 'All', typeFilter: 'All', subjectFilter: 'All',
+                searchQuery: '', resources: [], loading: true
             }
         },
         computed: {
+            subjectStats() {
+                const counts = {};
+                this.resources.forEach(r => {
+                    if (r.subject) {
+                        counts[r.subject] = (counts[r.subject] || 0) + 1;
+                    }
+                });
+                return Object.keys(counts).sort().map(name => ({
+                    name, count: counts[name]
+                }));
+            },
             filteredResources() {
                 return this.resources.filter(r => {
                     const matchesSem = this.semFilter === 'All' || String(r.semester) === this.semFilter;
                     const matchesType = this.typeFilter === 'All' || r.type === this.typeFilter;
-                    const matchesSearch = r.title.toLowerCase().includes(this.searchQuery.toLowerCase());
-                    return matchesSem && matchesType && matchesSearch;
+                    const matchesSubj = this.subjectFilter === 'All' || r.subject === this.subjectFilter;
+                    const matchesSearch = r.title.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
+                                         r.subject.toLowerCase().includes(this.searchQuery.toLowerCase());
+                    return matchesSem && matchesType && matchesSubj && matchesSearch;
                 });
             }
         },
         methods: {
             filterClass(active) {
-                const base = 'whitespace-nowrap px-7 py-3 rounded-2xl text-[11px] font-black uppercase transition-all border ';
+                const base = 'whitespace-nowrap px-6 py-3 rounded-2xl text-[10px] font-black uppercase transition-all border ';
                 return active 
                     ? 'bg-red-700 border-red-700 text-white shadow-xl scale-105' 
                     : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30 hover:text-white';
             },
             fetchData() {
                 Papa.parse(SHEET_URL, {
-                    download: true,
-                    header: true,
-                    skipEmptyLines: 'greedy',
+                    download: true, header: true, skipEmptyLines: 'greedy',
                     complete: (results) => {
                         this.resources = results.data.map((row, index) => {
                             const find = (key) => {
@@ -168,6 +181,7 @@
                                 title: find("TITLE"),
                                 semester: find("SEMESTER"),
                                 type: find("TYPE"),
+                                subject: find("SUBJECT"),
                                 link: find("LINK")
                             };
                         }).filter(r => r.title && r.link);
@@ -176,9 +190,7 @@
                 });
             }
         },
-        mounted() {
-            this.fetchData();
-        }
+        mounted() { this.fetchData(); }
     }).mount('#app')
 </script>
 </body>
