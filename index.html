@@ -3,117 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abhimanyu Learning Space | SFI IMSc</title>
+    <title>Abhimanyu Learning Space | SFI IMSc CUSAT</title>
+    
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png">
+
     <style>
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: #f1f5f9;
+            background: #f8fafc;
+            color: #1e293b;
         }
+        /* Glassmorphism Design */
         .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
+        /* Cinematic Header */
         .hero-bg {
-            background: linear-gradient(rgba(136, 8, 8, 0.9), rgba(20, 20, 20, 0.95)), 
-                        url('https://github.com/Com-Adarsh/library-sheet/blob/main/cusat.jpg');
+            background: linear-gradient(rgba(136, 8, 8, 0.92), rgba(15, 23, 42, 0.95)), 
+                        url('https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/cusat.jpg');
             background-attachment: fixed;
             background-size: cover;
             background-position: center;
         }
+        /* Hide scrollbar for semester tabs */
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
     </style>
 </head>
-<body>
+<body class="antialiased">
 
 <div id="app">
-    <header class="hero-bg text-white pt-12 pb-16 shadow-2xl">
+    <header class="hero-bg text-white pt-16 pb-20 shadow-2xl">
         <div class="max-w-6xl mx-auto px-4 text-center">
-            <div class="flex justify-center items-center gap-6 mb-6">
-                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white">
-                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/sfi%20imsc%20logo.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white">
+            <div class="flex justify-center items-center gap-6 mb-8">
+                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" 
+                     class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
+                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/sfi%20imsc%20logo.png" 
+                     class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
             </div>
-            <h1 class="text-3xl md:text-5xl font-extrabold tracking-tighter uppercase mb-2">ABHIMANYU LEARNING SPACE</h1>
-            <p class="text-sm md:text-lg text-red-100 font-bold opacity-80">SFI IMSc DIGITAL LIBRARY</p>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter uppercase mb-3">ABHIMANYU LEARNING SPACE</h1>
+            <p class="text-sm md:text-xl text-red-100 font-semibold tracking-widest opacity-90 italic">IMSc Digital Repository & Library</p>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 -mt-8 pb-24">
-        <div class="glass-card rounded-2xl shadow-xl mb-6">
-            <input v-model="searchQuery" type="text" placeholder="Search for textbooks, subjects, or notes..." 
-                   class="w-full bg-transparent p-5 outline-none text-lg font-medium">
+    <main class="max-w-6xl mx-auto px-4 -mt-10 pb-32">
+        
+        <div class="glass-card rounded-3xl shadow-2xl p-2 mb-8 flex flex-col md:flex-row items-center gap-2">
+            <div class="relative w-full">
+                <input v-model="searchQuery" type="text" 
+                       placeholder="Search by subject, title or type..." 
+                       class="w-full bg-transparent p-5 outline-none text-lg font-medium placeholder-slate-400">
+            </div>
+            <div class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs tracking-widest hidden md:block">
+                {{ filteredResources.length }} RESULTS
+            </div>
         </div>
 
-        <div class="flex gap-2 overflow-x-auto pb-6 no-scrollbar">
-            <button @click="semFilter = 'All'" :class="semClass(semFilter === 'All', 'All')">All</button>
+        <div class="flex gap-3 overflow-x-auto pb-8 no-scrollbar">
+            <button @click="semFilter = 'All'" :class="semClass(semFilter === 'All', 'All')">All Semesters</button>
             <button v-for="n in 10" :key="n" @click="semFilter = n.toString()" :class="semClass(semFilter === n.toString(), n)">
-                S{{ n }}
+                SEM {{ n }}
             </button>
         </div>
 
-        <div v-if="loading" class="text-center py-20">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-red-700 mx-auto"></div>
-            <p class="mt-4 text-slate-500 font-bold italic uppercase tracking-widest text-xs">Syncing Database...</p>
+        <div v-if="loading" class="text-center py-24">
+            <div class="animate-spin rounded-full h-14 w-14 border-b-4 border-red-700 mx-auto"></div>
+            <p class="mt-6 text-slate-500 font-black text-xs uppercase tracking-[0.3em] animate-pulse">Syncing with Cloud Database</p>
         </div>
 
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div v-else-if="filteredResources.length === 0" class="text-center py-24 glass-card rounded-3xl">
+            <p class="text-slate-400 font-bold uppercase tracking-widest">No resources found for this selection.</p>
+        </div>
+
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div v-for="item in filteredResources" :key="item.Title"
-                 class="glass-card rounded-3xl p-6 shadow-sm hover:shadow-2xl transition-all border-t-8"
+                 class="glass-card rounded-[2.5rem] p-8 card-hover transition-all duration-300 border-t-[10px]"
                  :style="{ borderColor: getSemColor(item.Semester) }">
                 
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-[10px] font-black px-3 py-1 rounded-full uppercase text-white shadow-sm"
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-[10px] font-black px-4 py-1.5 rounded-full uppercase text-white"
                           :style="{ backgroundColor: getSemColor(item.Semester) }">
-                        Semester {{ item.Semester }}
+                        Sem {{ item.Semester }}
                     </span>
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ item.Type }}</span>
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ item.Type }}</span>
                 </div>
                 
-                <h3 class="text-xl font-extrabold text-slate-800 leading-tight mb-6">
+                <h3 class="text-2xl font-extrabold text-slate-800 leading-tight mb-8 min-h-[4rem]">
                     {{ item.Title }}
                 </h3>
 
-                <a :href="item.Link" target="_blank" 
-                   class="inline-flex items-center gap-2 font-black text-sm tracking-tighter transition-all hover:gap-3"
-                   :style="{ color: getSemColor(item.Semester) }">
-                    ACCESS DOCUMENT
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </a>
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <a :href="item.Link" target="_blank" 
+                       class="group inline-flex items-center gap-3 font-black text-sm tracking-tighter"
+                       :style="{ color: getSemColor(item.Semester) }">
+                        OPEN RESOURCE
+                        <svg class="w-5 h-5 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
     </main>
 
     <button @click="showUpload = true" 
-            class="fixed bottom-8 right-8 bg-red-700 text-white px-6 py-4 rounded-2xl shadow-2xl hover:scale-105 transition-all z-50 flex items-center gap-3 font-bold uppercase tracking-tighter">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            class="fixed bottom-8 right-8 bg-red-700 text-white px-8 py-5 rounded-3xl shadow-2xl hover:scale-110 active:scale-95 transition-all z-50 flex items-center gap-4 font-black uppercase tracking-widest text-xs">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
         Contribute
     </button>
 
-    <div v-if="showUpload" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl relative">
-            <button @click="showUpload = false" class="absolute top-6 right-6 text-2xl font-bold text-slate-400">&times;</button>
-            <h2 class="text-2xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">New Contribution</h2>
-            <p class="text-slate-500 text-xs mb-6 font-bold uppercase">Submitted files are reviewed by the Subcommittee.</p>
+    <div v-if="showUpload" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-[3rem] max-w-md w-full p-10 shadow-2xl relative border border-white/20">
+            <button @click="showUpload = false" class="absolute top-8 right-8 text-3xl font-light text-slate-300 hover:text-red-700">&times;</button>
             
-            <form @submit.prevent="submitForm" class="space-y-4">
-                <input v-model="newEntry.title" type="text" required placeholder="Resource Title (e.g. Statistics Notes)" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-4 outline-none focus:border-red-600">
-                <div class="grid grid-cols-2 gap-4">
-                    <select v-model="newEntry.semester" class="bg-slate-50 border-2 border-slate-100 rounded-xl p-4 outline-none">
-                        <option v-for="n in 10" :value="n">Sem {{ n }}</option>
-                    </select>
-                    <select v-model="newEntry.type" class="bg-slate-50 border-2 border-slate-100 rounded-xl p-4 outline-none">
-                        <option>Notes</option>
-                        <option>PYQ</option>
-                        <option>Textbook</option>
-                    </select>
+            <h2 class="text-3xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">Submit Resource</h2>
+            <p class="text-slate-400 text-xs mb-8 font-bold uppercase tracking-wide">Verification by Sub-committee is required.</p>
+            
+            <form @submit.prevent="submitForm" class="space-y-5">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black uppercase text-slate-400 ml-2">Resource Title</label>
+                    <input v-model="newEntry.title" type="text" required placeholder="e.g. Statistical Inference Notes" 
+                           class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl p-4 outline-none focus:border-red-600 transition-colors">
                 </div>
-                <input v-model="newEntry.link" type="url" required placeholder="Google Drive Link" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-4 outline-none focus:border-red-600">
-                <button type="submit" :disabled="uploading" class="w-full bg-red-700 text-white font-black py-4 rounded-xl hover:bg-slate-900 transition-colors shadow-xl">
-                    {{ uploading ? 'UPLOADING...' : 'SUBMIT FOR REVIEW' }}
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black uppercase text-slate-400 ml-2">Semester</label>
+                        <select v-model="newEntry.semester" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl p-4 outline-none appearance-none">
+                            <option v-for="n in 10" :value="n">Sem {{ n }}</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-black uppercase text-slate-400 ml-2">Category</label>
+                        <select v-model="newEntry.type" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl p-4 outline-none appearance-none">
+                            <option>Notes</option>
+                            <option>PYQ</option>
+                            <option>Textbook</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black uppercase text-slate-400 ml-2">Google Drive Link</label>
+                    <input v-model="newEntry.link" type="url" required placeholder="https://drive.google.com/..." 
+                           class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl p-4 outline-none focus:border-red-600 transition-colors">
+                </div>
+
+                <button type="submit" :disabled="uploading" 
+                        class="w-full bg-red-700 text-white font-black py-5 rounded-2xl hover:bg-slate-900 transition-all shadow-xl shadow-red-200 mt-4 disabled:opacity-50">
+                    {{ uploading ? 'SENDING TO ADMIN...' : 'SUBMIT FOR REVIEW' }}
                 </button>
             </form>
         </div>
@@ -122,6 +172,8 @@
 
 <script>
     const { createApp } = Vue;
+
+    // --- CONFIGURATION ---
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTSKlLQMEpcnLtAEpyjG85WjHNWPeKP2er_baGRjtjxsAUjFo7z7gu5aahKpmh0FN9O0nYtIh1dpQTq/pub?output=csv';
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoitEj7xr467FGlaQMKl1woZz8CCneBxfriaBlPB5MHYSSvUH0yt9WSmkIibbBg_Ai/exec';
 
@@ -139,10 +191,10 @@
         },
         computed: {
             filteredResources() {
-                // Defensive filtering to prevent "Line 27" errors
                 return this.resources.filter(r => {
                     if (!r) return false;
                     
+                    // Unified handling for case sensitivity and missing fields
                     const title = (r.Title ?? r.title ?? "").toString().toLowerCase();
                     const semester = (r.Semester ?? r.semester ?? "").toString().trim();
                     const type = (r.Type ?? r.type ?? "").toString().toLowerCase();
@@ -158,43 +210,56 @@
         methods: {
             getSemColor(sem) {
                 const s = parseInt(sem);
-                if (s <= 2) return '#0f172a'; // Navy
-                if (s <= 4) return '#880808'; // Crimson
-                if (s <= 6) return '#064e3b'; // Green
-                if (s <= 8) return '#4c1d95'; // Purple
-                return '#78350f'; // Amber
+                if (s <= 2) return '#0f172a'; // Navy Blue
+                if (s <= 4) return '#880808'; // SFI Crimson
+                if (s <= 6) return '#166534'; // Forest Green
+                if (s <= 8) return '#5b21b6'; // Royal Purple
+                return '#92400e'; // Amber Gold
             },
             semClass(active, sem) {
-                const base = 'whitespace-nowrap px-6 py-2 rounded-xl text-xs font-black uppercase transition-all border-2 ';
-                if (!active) return base + 'bg-white border-slate-200 text-slate-400 hover:border-slate-400';
-                return base + 'text-white shadow-lg bg-red-700 border-red-700';
+                const base = 'whitespace-nowrap px-8 py-3 rounded-2xl text-[11px] font-black uppercase transition-all border-2 ';
+                if (!active) return base + 'bg-white/50 border-slate-200 text-slate-500 hover:border-slate-400';
+                return base + 'bg-red-700 border-red-700 text-white shadow-xl scale-105';
             },
             async submitForm() {
                 this.uploading = true;
                 try {
-                    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(this.newEntry) });
-                    alert("Submission successful! Admin will review it soon.");
+                    // Using no-cors for Google Apps Script compatibility
+                    await fetch(SCRIPT_URL, { 
+                        method: 'POST', 
+                        mode: 'no-cors', 
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(this.newEntry) 
+                    });
+                    alert("Success! Your contribution has been sent for review.");
                     this.showUpload = false;
                     this.newEntry = { title: '', semester: 1, type: 'Notes', link: '' };
                 } catch (e) { 
-                    alert("Network error. Please check your internet."); 
+                    alert("Submission error. Please check the URL and try again."); 
                 } finally { 
                     this.uploading = false; 
                 }
             },
-            init() {
+            fetchData() {
                 Papa.parse(SHEET_URL, {
                     download: true,
                     header: true,
-                    skipEmptyLines: true,
-                    complete: (res) => {
-                        this.resources = res.data.filter(row => row.Title || row.title);
+                    skipEmptyLines: 'greedy',
+                    complete: (results) => {
+                        // Filter out rows that don't have a title to keep UI clean
+                        this.resources = results.data.filter(row => row.Title || row.title);
+                        this.loading = false;
+                    },
+                    error: (err) => {
+                        console.error("CSV Sync Failed:", err);
                         this.loading = false;
                     }
                 });
             }
         },
-        mounted() { this.init(); }
+        mounted() {
+            this.fetchData();
+        }
     }).mount('#app')
 </script>
 </body>
