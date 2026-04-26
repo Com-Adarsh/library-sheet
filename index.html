@@ -10,19 +10,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { 
-            font-family: 'Plus+Jakarta+Sans', sans-serif; 
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #f1f5f9;
         }
-        /* Glassmorphism Effect */
         .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
         .hero-bg {
-            background: linear-gradient(rgba(136, 8, 8, 0.85), rgba(20, 20, 20, 0.9)), 
-                        url('https://github.com/Com-Adarsh/library-sheet/blob/main/cusat.jpg'); /* Add a campus photo here */
+            background: linear-gradient(rgba(136, 8, 8, 0.9), rgba(20, 20, 20, 0.95)), 
+                        url('https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/cusat-bg.jpg');
             background-attachment: fixed;
             background-size: cover;
             background-position: center;
@@ -30,29 +28,27 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="text-slate-900">
+<body>
 
 <div id="app">
-    <header class="hero-bg text-white pt-16 pb-20 shadow-2xl">
+    <header class="hero-bg text-white pt-12 pb-16 shadow-2xl">
         <div class="max-w-6xl mx-auto px-4 text-center">
-            <div class="flex justify-center items-center gap-8 mb-6">
-                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" alt="Abhimanyu Memorial" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl">
-                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/sfi%20imsc%20logo.png" alt="SFI CUSAT" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl">
+            <div class="flex justify-center items-center gap-6 mb-6">
+                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white">
+                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/sfi%20imsc%20logo.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white">
             </div>
-            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-2">ABHIMANYU LEARNING SPACE</h1>
-            <p class="text-lg text-red-100 font-medium tracking-wide uppercase opacity-90">SFI IMSc Digital Library</p>
+            <h1 class="text-3xl md:text-5xl font-extrabold tracking-tighter uppercase mb-2">ABHIMANYU LEARNING SPACE</h1>
+            <p class="text-sm md:text-lg text-red-100 font-bold opacity-80">SFI IMSc DIGITAL LIBRARY</p>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 -mt-10 pb-20">
-        
-        <div class="glass-card rounded-2xl p-2 mb-8 shadow-xl flex items-center">
-            <input v-model="searchQuery" type="text" placeholder="Search by subject, title or semester..." 
-                   class="w-full bg-transparent p-4 outline-none text-lg font-medium placeholder-slate-400">
-            <div class="px-6 py-2 bg-red-700 text-white rounded-xl font-bold mr-2 hidden md:block">SEARCH</div>
+    <main class="max-w-6xl mx-auto px-4 -mt-8 pb-24">
+        <div class="glass-card rounded-2xl shadow-xl mb-6">
+            <input v-model="searchQuery" type="text" placeholder="Search for textbooks, subjects, or notes..." 
+                   class="w-full bg-transparent p-5 outline-none text-lg font-medium">
         </div>
 
-        <div class="flex gap-3 overflow-x-auto pb-6 mb-4 no-scrollbar">
+        <div class="flex gap-2 overflow-x-auto pb-6 no-scrollbar">
             <button @click="semFilter = 'All'" :class="semClass(semFilter === 'All', 'All')">All</button>
             <button v-for="n in 10" :key="n" @click="semFilter = n.toString()" :class="semClass(semFilter === n.toString(), n)">
                 S{{ n }}
@@ -61,12 +57,12 @@
 
         <div v-if="loading" class="text-center py-20">
             <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-red-700 mx-auto"></div>
+            <p class="mt-4 text-slate-500 font-bold italic uppercase tracking-widest text-xs">Syncing Database...</p>
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div v-for="item in filteredResources" 
-                 :key="item.Title"
-                 class="glass-card rounded-3xl p-6 shadow-sm hover:shadow-2xl transition-all group border-t-8"
+            <div v-for="item in filteredResources" :key="item.Title"
+                 class="glass-card rounded-3xl p-6 shadow-sm hover:shadow-2xl transition-all border-t-8"
                  :style="{ borderColor: getSemColor(item.Semester) }">
                 
                 <div class="flex justify-between items-start mb-4">
@@ -77,49 +73,47 @@
                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ item.Type }}</span>
                 </div>
                 
-                <h3 class="text-xl font-bold text-slate-800 leading-snug group-hover:text-red-700 transition-colors mb-6 min-h-[3rem]">
+                <h3 class="text-xl font-extrabold text-slate-800 leading-tight mb-6">
                     {{ item.Title }}
                 </h3>
 
-                <div class="flex items-center justify-between">
-                    <a :href="item.Link" target="_blank" 
-                       class="inline-flex items-center gap-2 font-extrabold text-sm tracking-tight transition-all hover:gap-4"
-                       :style="{ color: getSemColor(item.Semester) }">
-                        OPEN RESOURCE
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                    </a>
-                </div>
+                <a :href="item.Link" target="_blank" 
+                   class="inline-flex items-center gap-2 font-black text-sm tracking-tighter transition-all hover:gap-3"
+                   :style="{ color: getSemColor(item.Semester) }">
+                    ACCESS DOCUMENT
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
             </div>
         </div>
     </main>
 
     <button @click="showUpload = true" 
-            class="fixed bottom-8 right-8 bg-red-700 text-white p-4 rounded-2xl shadow-2xl hover:scale-110 transition-transform z-50 flex items-center gap-3 font-bold">
+            class="fixed bottom-8 right-8 bg-red-700 text-white px-6 py-4 rounded-2xl shadow-2xl hover:scale-105 transition-all z-50 flex items-center gap-3 font-bold uppercase tracking-tighter">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-        <span class="hidden md:inline">CONTRIBUTE</span>
+        Contribute
     </button>
 
-    <div v-if="showUpload" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <div v-if="showUpload" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl relative">
-            <button @click="showUpload = false" class="absolute top-6 right-6 text-2xl font-bold text-slate-400 hover:text-red-700">&times;</button>
-            <h2 class="text-2xl font-black text-slate-900 mb-2 uppercase">Contribute</h2>
-            <p class="text-slate-500 text-sm mb-6">Your submission will be reviewed by the SFI IMSc Sub-committee before being added to the library.</p>
+            <button @click="showUpload = false" class="absolute top-6 right-6 text-2xl font-bold text-slate-400">&times;</button>
+            <h2 class="text-2xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">New Contribution</h2>
+            <p class="text-slate-500 text-xs mb-6 font-bold uppercase">Submitted files are reviewed by the Subcommittee.</p>
             
             <form @submit.prevent="submitForm" class="space-y-4">
-                <input v-model="newEntry.title" type="text" required placeholder="Subject/Title Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 outline-none focus:border-red-600">
+                <input v-model="newEntry.title" type="text" required placeholder="Resource Title (e.g. Statistics Notes)" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-4 outline-none focus:border-red-600">
                 <div class="grid grid-cols-2 gap-4">
-                    <select v-model="newEntry.semester" class="bg-slate-50 border border-slate-200 rounded-xl p-4 outline-none">
+                    <select v-model="newEntry.semester" class="bg-slate-50 border-2 border-slate-100 rounded-xl p-4 outline-none">
                         <option v-for="n in 10" :value="n">Sem {{ n }}</option>
                     </select>
-                    <select v-model="newEntry.type" class="bg-slate-50 border border-slate-200 rounded-xl p-4 outline-none">
+                    <select v-model="newEntry.type" class="bg-slate-50 border-2 border-slate-100 rounded-xl p-4 outline-none">
                         <option>Notes</option>
                         <option>PYQ</option>
                         <option>Textbook</option>
                     </select>
                 </div>
-                <input v-model="newEntry.link" type="url" required placeholder="Google Drive Public Link" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 outline-none focus:border-red-600">
-                <button type="submit" :disabled="uploading" class="w-full bg-red-700 text-white font-black py-4 rounded-xl hover:bg-slate-900 transition-colors shadow-lg shadow-red-200">
-                    {{ uploading ? 'SENDING FOR REVIEW...' : 'SUBMIT FOR VERIFICATION' }}
+                <input v-model="newEntry.link" type="url" required placeholder="Google Drive Link" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-4 outline-none focus:border-red-600">
+                <button type="submit" :disabled="uploading" class="w-full bg-red-700 text-white font-black py-4 rounded-xl hover:bg-slate-900 transition-colors shadow-xl">
+                    {{ uploading ? 'UPLOADING...' : 'SUBMIT FOR REVIEW' }}
                 </button>
             </form>
         </div>
@@ -128,7 +122,6 @@
 
 <script>
     const { createApp } = Vue;
-    // Your CSV and Apps Script Links
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTSKlLQMEpcnLtAEpyjG85WjHNWPeKP2er_baGRjtjxsAUjFo7z7gu5aahKpmh0FN9O0nYtIh1dpQTq/pub?output=csv';
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoitEj7xr467FGlaQMKl1woZz8CCneBxfriaBlPB5MHYSSvUH0yt9WSmkIibbBg_Ai/exec';
 
@@ -146,9 +139,18 @@
         },
         computed: {
             filteredResources() {
+                // Defensive filtering to prevent "Line 27" errors
                 return this.resources.filter(r => {
-                    const matchesSem = this.semFilter === 'All' || r.Semester.trim() === this.semFilter;
-                    const matchesSearch = r.Title.toLowerCase().includes(this.searchQuery.toLowerCase());
+                    if (!r) return false;
+                    
+                    const title = (r.Title ?? r.title ?? "").toString().toLowerCase();
+                    const semester = (r.Semester ?? r.semester ?? "").toString().trim();
+                    const type = (r.Type ?? r.type ?? "").toString().toLowerCase();
+                    const query = this.searchQuery.toLowerCase();
+
+                    const matchesSem = this.semFilter === 'All' || semester === this.semFilter;
+                    const matchesSearch = title.includes(query) || type.includes(query);
+
                     return matchesSem && matchesSearch;
                 });
             }
@@ -156,35 +158,37 @@
         methods: {
             getSemColor(sem) {
                 const s = parseInt(sem);
-                if (s <= 2) return '#1e3a8a'; // Navy Blue
+                if (s <= 2) return '#0f172a'; // Navy
                 if (s <= 4) return '#880808'; // Crimson
-                if (s <= 6) return '#065f46'; // Forest Green
-                if (s <= 8) return '#5b21b6'; // Purple
-                return '#92400e'; // Amber/Gold
+                if (s <= 6) return '#064e3b'; // Green
+                if (s <= 8) return '#4c1d95'; // Purple
+                return '#78350f'; // Amber
             },
             semClass(active, sem) {
-                const base = 'whitespace-nowrap px-6 py-2 rounded-xl text-sm font-bold transition-all border-2 ';
-                if (!active) return base + 'bg-white border-slate-200 text-slate-500 hover:border-slate-400';
-                
-                const color = this.getSemColor(sem === 'All' ? 4 : sem);
-                return base + 'text-white shadow-lg scale-105';
+                const base = 'whitespace-nowrap px-6 py-2 rounded-xl text-xs font-black uppercase transition-all border-2 ';
+                if (!active) return base + 'bg-white border-slate-200 text-slate-400 hover:border-slate-400';
+                return base + 'text-white shadow-lg bg-red-700 border-red-700';
             },
             async submitForm() {
                 this.uploading = true;
                 try {
                     await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(this.newEntry) });
-                    alert("Submission Sent! The Admin will review and add it to the library shortly.");
+                    alert("Submission successful! Admin will review it soon.");
                     this.showUpload = false;
                     this.newEntry = { title: '', semester: 1, type: 'Notes', link: '' };
-                } catch (e) { alert("Error connecting to server."); } 
-                finally { this.uploading = false; }
+                } catch (e) { 
+                    alert("Network error. Please check your internet."); 
+                } finally { 
+                    this.uploading = false; 
+                }
             },
             init() {
                 Papa.parse(SHEET_URL, {
                     download: true,
                     header: true,
+                    skipEmptyLines: true,
                     complete: (res) => {
-                        this.resources = res.data.filter(row => row.Title && row.Link);
+                        this.resources = res.data.filter(row => row.Title || row.title);
                         this.loading = false;
                     }
                 });
