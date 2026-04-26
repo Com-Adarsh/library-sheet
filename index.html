@@ -33,36 +33,37 @@
                 <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
                 <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/sfi%20imsc%20logo.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
             </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold uppercase mb-3">ABHIMANYU LEARNING SPACE</h1>
-            <p class="text-sm md:text-xl text-red-100 font-semibold italic">IMSc Digital Library</p>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter uppercase mb-3">ABHIMANYU LEARNING SPACE</h1>
+            <p class="text-sm md:text-xl text-red-100 font-semibold tracking-widest opacity-90 italic">IMSc Digital Library</p>
         </div>
     </header>
 
     <main class="max-w-6xl mx-auto px-4 -mt-10 pb-32">
         <div class="glass-card rounded-3xl shadow-2xl p-2 mb-8 flex flex-col md:flex-row items-center gap-2">
             <div class="relative w-full">
-                <input v-model="searchQuery" type="text" placeholder="Search resources..." class="w-full bg-transparent p-5 outline-none text-lg font-medium">
+                <input v-model="searchQuery" type="text" placeholder="Search by subject, title or type..." class="w-full bg-transparent p-5 outline-none text-lg font-medium placeholder-slate-400">
             </div>
-            <div class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs hidden md:block">
+            <div class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs tracking-widest hidden md:block">
                 {{ filteredResources.length }} RESULTS
             </div>
         </div>
 
         <div class="flex gap-3 overflow-x-auto pb-8 no-scrollbar">
-            <button @click="semFilter = 'All'" :class="semClass(semFilter === 'All', 'All')">All</button>
+            <button @click="semFilter = 'All'" :class="semClass(semFilter === 'All', 'All')">All Semesters</button>
             <button v-for="n in 10" :key="n" @click="semFilter = n.toString()" :class="semClass(semFilter === n.toString(), n)">SEM {{ n }}</button>
         </div>
 
         <div v-if="loading" class="text-center py-24">
             <div class="animate-spin rounded-full h-14 w-14 border-b-4 border-red-700 mx-auto"></div>
+            <p class="mt-6 text-slate-500 font-black text-xs uppercase tracking-[0.3em] animate-pulse">Syncing with Cloud Database</p>
         </div>
 
         <div v-else-if="filteredResources.length === 0" class="text-center py-24 glass-card rounded-3xl">
-            <p class="text-slate-400 font-bold uppercase">No resources found.</p>
+            <p class="text-slate-400 font-bold uppercase tracking-widest">No resources found for this selection.</p>
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div v-for="item in filteredResources" :key="item.uniqueId"
+            <div v-for="item in filteredResources" :key="item.id"
                  class="glass-card rounded-[2.5rem] p-8 card-hover transition-all duration-300 border-t-[10px]"
                  :style="{ borderColor: getSemColor(item.semester) }">
                 
@@ -70,37 +71,62 @@
                     <span class="text-[10px] font-black px-4 py-1.5 rounded-full uppercase text-white" :style="{ backgroundColor: getSemColor(item.semester) }">
                         Sem {{ item.semester }}
                     </span>
-                    <span class="text-[11px] font-bold text-slate-400 uppercase">{{ item.type }}</span>
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{ item.type }}</span>
                 </div>
                 
                 <h3 class="text-2xl font-extrabold text-slate-800 leading-tight mb-8 min-h-[4rem]">{{ item.title }}</h3>
 
-                <div class="pt-4 border-t border-slate-100">
-                    <a :href="item.link" target="_blank" class="font-black text-sm flex items-center gap-2" :style="{ color: getSemColor(item.semester) }">
-                        OPEN RESOURCE →
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <a :href="item.link" target="_blank" rel="noopener noreferrer"
+                       class="group inline-flex items-center gap-3 font-black text-sm tracking-tighter"
+                       :style="{ color: getSemColor(item.semester) }">
+                        OPEN RESOURCE
+                        <svg class="w-5 h-5 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                     </a>
                 </div>
             </div>
         </div>
     </main>
 
-    <button @click="showUpload = true" class="fixed bottom-8 right-8 bg-red-700 text-white px-8 py-5 rounded-3xl shadow-2xl z-50 font-black uppercase text-xs">
+    <button @click="showUpload = true" class="fixed bottom-8 right-8 bg-red-700 text-white px-8 py-5 rounded-3xl shadow-2xl hover:scale-110 active:scale-95 transition-all z-50 flex items-center gap-4 font-black uppercase tracking-widest text-xs">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
         Contribute
     </button>
+
+    <div v-if="showUpload" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-[3rem] max-w-md w-full p-10 shadow-2xl relative border border-white/20">
+            <button @click="showUpload = false" class="absolute top-8 right-8 text-3xl font-light text-slate-300 hover:text-red-700">&times;</button>
+            <h2 class="text-3xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">Submit Resource</h2>
+            <form @submit.prevent="submitForm" class="space-y-5">
+                <input v-model="newEntry.title" type="text" required placeholder="Resource Title" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl p-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <select v-model="newEntry.semester" class="bg-slate-50 border-2 border-slate-100 rounded-2xl p-4">
+                        <option v-for="n in 10" :value="n">Sem {{ n }}</option>
+                    </select>
+                    <select v-model="newEntry.type" class="bg-slate-50 border-2 border-slate-100 rounded-2xl p-4">
+                        <option>Notes</option><option>PYQ</option><option>Textbook</option>
+                    </select>
+                </div>
+                <input v-model="newEntry.link" type="url" required placeholder="Google Drive Link" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl p-4">
+                <button type="submit" :disabled="uploading" class="w-full bg-red-700 text-white font-black py-5 rounded-2xl">
+                    {{ uploading ? 'SENDING...' : 'SUBMIT FOR REVIEW' }}
+                </button>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
     const { createApp } = Vue;
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTSKlLQMEpcnLtAEpyjG85WjHNWPeKP2er_baGRjtjxsAUjFo7z7gu5aahKpmh0FN9O0nYtIh1dpQTq/pub?output=csv';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoitEj7xr467FGlaQMKl1woZz8CCneBxfriaBlPB5MHYSSvUH0yt9WSmkIibbBg_Ai/exec';
 
     createApp({
         data() {
             return {
-                semFilter: 'All',
-                searchQuery: '',
-                resources: [],
-                loading: true,
-                showUpload: false
+                semFilter: 'All', searchQuery: '', resources: [], loading: true,
+                showUpload: false, uploading: false,
+                newEntry: { title: '', semester: 1, type: 'Notes', link: '' }
             }
         },
         computed: {
@@ -121,8 +147,17 @@
                 return '#5b21b6';
             },
             semClass(active, sem) {
-                const base = 'whitespace-nowrap px-8 py-3 rounded-2xl text-[11px] font-black uppercase border-2 ';
-                return active ? base + 'bg-red-700 border-red-700 text-white shadow-xl' : base + 'bg-white border-slate-200 text-slate-500';
+                const base = 'whitespace-nowrap px-8 py-3 rounded-2xl text-[11px] font-black uppercase transition-all border-2 ';
+                return active ? base + 'bg-red-700 border-red-700 text-white shadow-xl scale-105' : base + 'bg-white/50 border-slate-200 text-slate-500';
+            },
+            async submitForm() {
+                this.uploading = true;
+                try {
+                    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(this.newEntry) });
+                    alert("Success! Reviewing soon.");
+                    this.showUpload = false;
+                } catch (e) { alert("Error submitting."); }
+                finally { this.uploading = false; }
             },
             fetchData() {
                 Papa.parse(SHEET_URL, {
@@ -130,20 +165,20 @@
                     header: true,
                     skipEmptyLines: 'greedy',
                     complete: (results) => {
-                        // THIS SECTION IS THE FIX: It maps any header name (TITLE, Title, title) to a safe lowercase version
+                        // FIX: Standardize all columns so logic never breaks
                         this.resources = results.data.map((row, index) => {
-                            const findValue = (keyName) => {
-                                const actualKey = Object.keys(row).find(k => k.trim().toUpperCase() === keyName.toUpperCase());
-                                return actualKey ? row[actualKey] : "";
+                            const find = (key) => {
+                                const foundKey = Object.keys(row).find(k => k.trim().toUpperCase() === key.toUpperCase());
+                                return foundKey ? row[foundKey] : "";
                             };
                             return {
-                                uniqueId: index,
-                                title: findValue("TITLE"),
-                                semester: findValue("SEMESTER"),
-                                type: findValue("TYPE"),
-                                link: findValue("LINK")
+                                id: index,
+                                title: find("TITLE"),
+                                semester: find("SEMESTER"),
+                                type: find("TYPE"),
+                                link: find("LINK")
                             };
-                        }).filter(r => r.title && r.link); // Only keep rows that actually have content
+                        }).filter(r => r.title && r.link);
                         this.loading = false;
                     }
                 });
