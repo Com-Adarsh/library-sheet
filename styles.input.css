@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: #f1f5f9; scroll-behavior: smooth; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .hero-bg {
+            background: linear-gradient(rgba(136, 8, 8, 0.85), rgba(15, 23, 42, 0.95)), 
+                        url('./images/cusat.jpg');
+            background-attachment: fixed; background-size: cover; background-position: center;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .card-hover:hover { transform: translateY(-8px); background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); }
+        .success-toast { animation: slideUp 0.5s ease-out forwards; }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    
+[v-cloak] { display: none; }
+:focus-visible { outline: 3px solid #fca5a5; outline-offset: 4px; }
+button, a, input, select { -webkit-tap-highlight-color: transparent; }
+.pwa-toolbar { padding-top: max(1rem, env(safe-area-inset-top)); }
+.contribute-button { bottom: max(1.5rem, env(safe-area-inset-bottom)); }
+button:disabled { cursor: not-allowed; }
+@media (max-width: 767px) { .hero-bg { background-attachment: scroll; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  .card-hover:hover { transform: none; }
+}
