@@ -1,13 +1,17 @@
 /* 4. LIBRARY UI — public catalogue, remembered filters, and contributions. */
 (function () {
   'use strict';
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.unregister())).catch(() => {});
+    if ('caches' in window) caches.keys().then(names => names.filter(name => name.startsWith('imsc-library-shell-')).forEach(name => caches.delete(name))).catch(() => {});
+  }
   const { createApp } = Vue;
   const PREF_KEY = 'imsc-library-preferences-v1';
   const blankEntry = () => ({ title: '', semester: 1, type: 'Notes', subject: '', link: '' });
   let initial;
   try { initial = LibraryCore.preferences(localStorage.getItem(PREF_KEY)); }
   catch (_) { initial = LibraryCore.preferences(null); }
-  let onlineListener, offlineListener, pwaListener;
+  let onlineListener, offlineListener;
 
   createApp({
     data() {
@@ -15,8 +19,8 @@
         semFilter: initial.semester, typeFilter: initial.type, subjectFilter: initial.subject, searchQuery: '',
         resources: [], loading: true, refreshing: false, catalogueAvailable: false,
         lastUpdated: null, cacheSaved: false, loadError: '', storageWarning: '', preferenceWarning: '',
-        online: navigator.onLine, pwa: { ...LibraryPWA.state },
-        showInstallHelp: false, showUpload: false, uploading: false, showSuccess: false,
+        online: navigator.onLine,
+        showUpload: false, uploading: false, showSuccess: false,
         formError: '', linkError: false, newEntry: blankEntry()
       };
     },
@@ -44,7 +48,7 @@
         if (!this.online) return this.catalogueAvailable ? 'Offline — showing your saved catalogue' : 'Offline — connect to load the catalogue';
         if (this.refreshing) return 'Refreshing catalogue…';
         if (this.loadError) return this.catalogueAvailable ? 'Showing the last available catalogue' : 'Catalogue unavailable';
-        return this.cacheSaved && this.pwa.offlineReady ? 'Catalogue ready for offline browsing' : 'Online';
+        return this.cacheSaved ? 'Catalogue saved on this device' : 'Online';
       }
     },
     watch: {
@@ -66,14 +70,6 @@
         } catch (_) { this.preferenceWarning = 'Your browser could not save your filter preferences.'; }
       },
       resetFilters() { this.semFilter = 'All'; this.typeFilter = 'All'; this.subjectFilter = 'All'; this.searchQuery = ''; },
-      async installApp() {
-        if (!this.pwa.canInstall || !(await LibraryPWA.install())) this.showInstallHelp = !this.showInstallHelp;
-      },
-      checkUpdates() { LibraryPWA.check(); },
-      applyUpdate() {
-        if (this.showUpload || this.uploading) return;
-        LibraryPWA.applyUpdate();
-      },
       openResource(event) {
         if (!this.online) {
           event.preventDefault();
@@ -157,17 +153,14 @@
       }
     },
     async mounted() {
-      pwaListener = event => { this.pwa = event.detail; };
       onlineListener = () => { this.online = true; this.fetchData(); };
       offlineListener = () => { this.online = false; };
-      window.addEventListener('library:pwa', pwaListener);
       window.addEventListener('online', onlineListener);
       window.addEventListener('offline', offlineListener);
       await this.loadSavedCatalogue();
       await this.fetchData();
     },
     beforeUnmount() {
-      window.removeEventListener('library:pwa', pwaListener);
       window.removeEventListener('online', onlineListener);
       window.removeEventListener('offline', offlineListener);
     }

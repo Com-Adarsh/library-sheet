@@ -5,15 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Abhimanyu Learning Space | IMSc Library</title>
   <meta name="description" content="A focused digital library for IMSc students — textbooks, notes and previous question papers in one place.">
-  <meta name="theme-color" content="#f7f8fc">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="IMSc Library">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" type="image/png" href="./icon-192.png">
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="stylesheet" href="./fonts.css">
   <link rel="stylesheet" href="./styles.css">
-  <script defer src="./pwa.js"></script>
   <script defer src="./vue.global.prod.js"></script>
   <script defer src="./papaparse.min.js"></script>
   <script defer src="./config.js"></script>
@@ -27,16 +20,8 @@
   <div class="announcement" role="status">
     <div class="shell announcement-inner">
       <span><span class="status-dot"></span> Built for the IMSc community at CUSAT</span>
-      <button v-if="!pwa.installed" @click="installApp" class="text-button">{{ pwa.canInstall ? 'Install library' : 'How to install' }}</button>
-      <span v-else class="install-ready">Installed on this device</span>
     </div>
-    <section v-if="showInstallHelp" class="shell install-help" aria-label="Installation instructions">
-      <strong>Keep the library close</strong>
-      <p><b>iPhone / iPad:</b> Open in Safari, tap Share, then Add to Home Screen.</p>
-      <p><b>Android:</b> Use your browser menu and choose Install app or Add to Home screen.</p>
-      <p class="muted">Open this link in a regular browser first if it came from WhatsApp or Instagram.</p>
-      <button @click="showInstallHelp = false" class="text-button">Close</button>
-    </section>
+
   </div>
 
   <header class="hero">
@@ -73,7 +58,7 @@
     <section class="status-panel" aria-label="Catalogue status">
       <div><span class="status-dot" :class="{ offline: !online }"></span><strong>{{ connectionLabel }}</strong><p>{{ catalogueAvailable ? 'Last updated ' + updatedLabel : 'Connect once to save the catalogue for offline browsing.' }}</p></div>
       <button @click="fetchData" :disabled="!online || refreshing" class="secondary-button">{{ refreshing ? 'Refreshing...' : 'Refresh catalogue' }}</button>
-      <p v-if="loadError || storageWarning || preferenceWarning || pwa.error" class="error-line" role="alert">{{ loadError || storageWarning || preferenceWarning || pwa.error }}</p>
+      <p v-if="loadError || storageWarning || preferenceWarning" class="error-line" role="alert">{{ loadError || storageWarning || preferenceWarning }}</p>
     </section>
 
     <section class="filters" aria-label="Filter resources">
