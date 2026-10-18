@@ -1,1260 +1,249 @@
-# GitHub paste bundle
-
-Paste each section into a repository file with the exact filename in its heading. For a static GitHub Pages site, place `index.html`, `styles.css`, and `app.js` together in the published folder. Do not combine this source with the older Vue code pasted separately.
-
-## index.html
-
-```html
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101a2b">
-  <meta name="description" content="Abhimanyu Learning Space — the SFI IMSc Digital Library for textbooks, notes, and previous-year question papers at CUSAT.">
-  <title>Abhimanyu Learning Space | SFI IMSc Digital Library</title>
-  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-  <script defer src="app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abhimanyu Learning Space | SFI IMSc</title>
+    
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png">
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: #f1f5f9; scroll-behavior: smooth; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .hero-bg {
+            background: linear-gradient(rgba(136, 8, 8, 0.85), rgba(15, 23, 42, 0.95)), 
+                        url('https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/cusat.jpg');
+            background-attachment: fixed; background-size: cover; background-position: center;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .card-hover:hover { transform: translateY(-8px); background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); }
+        .success-toast { animation: slideUp 0.5s ease-out forwards; }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
 </head>
-<body>
-  <a class="skip-link" href="#main-content">Skip to library</a>
-  <div class="site-shell">
-    <header class="hero">
-      <nav class="top-nav wrap" aria-label="Main navigation">
-        <a class="brand-mini" href="#top" aria-label="Abhimanyu Learning Space home">
-          <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" alt="Abhimanyu Learning Space emblem" width="42" height="42">
-          <span>ABHIMANYU <b>LEARNING SPACE</b></span>
-        </a>
-        <div class="top-actions">
-          <a class="nav-link" href="#library">Library</a>
-          <a class="nav-link" href="#contributors">Contributors</a>
-          <button class="theme-toggle" type="button" data-action="toggle-theme" aria-label="Switch color theme">
-            <span class="theme-icon" aria-hidden="true">☼</span><span id="theme-label">Light mode</span>
-          </button>
+<body class="antialiased">
+
+<div id="app">
+    <header class="hero-bg pt-20 pb-24 shadow-2xl border-b border-white/10 text-center">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-center items-center gap-6 mb-8">
+                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
+                <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/sfi%20imsc%20logo.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter uppercase mb-3 text-white">ABHIMANYU LEARNING SPACE</h1>
+            <p class="text-sm md:text-xl text-red-200 font-black tracking-[0.2em] uppercase italic opacity-90">SFI IMSc Digital Library</p>
         </div>
-      </nav>
-      <div class="hero-content wrap" id="top">
-        <div class="logo-pair" aria-label="CUSAT and SFI IMSc">
-          <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" alt="Abhimanyu emblem" width="70" height="70">
-          <img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/sfi%20imsc%20logo.png" alt="SFI IMSc logo" width="70" height="70">
-        </div>
-        <p class="eyebrow">SFI IMSc DIGITAL LIBRARY · CUSAT</p>
-        <h1>Knowledge belongs<br class="mobile-break"> to everyone.</h1>
-        <p class="hero-subtitle">A shared shelf for the notes, textbooks, and question papers that help us move forward together.</p>
-        <a class="hero-cta" href="#library">Explore the library <span aria-hidden="true">↓</span></a>
-      </div>
-      <div class="hero-ribbon" aria-hidden="true"><span>ABHIMANYU LEARNING SPACE</span><span>STUDY · SHARE · GROW</span></div>
     </header>
 
-    <main id="main-content">
-      <section class="library-head wrap" id="library" aria-labelledby="library-title">
-        <div class="section-intro">
-          <div>
-            <p class="eyebrow eyebrow-red">YOUR STUDY DESK</p>
-            <h2 id="library-title">Find what you need.</h2>
-            <p class="section-copy">Search the collection, narrow it down, and get back to learning.</p>
-          </div>
-          <label class="semester-select-wrap" for="my-semester">
-            <span class="select-caption">YOUR SEMESTER</span>
-            <select id="my-semester" aria-label="Choose your semester">
-              <option value="">Choose semester</option>
-              <option value="1">Semester 1</option><option value="2">Semester 2</option>
-              <option value="3">Semester 3</option><option value="4">Semester 4</option>
-              <option value="5">Semester 5</option><option value="6">Semester 6</option>
-              <option value="7">Semester 7</option><option value="8">Semester 8</option>
-              <option value="9">Semester 9</option><option value="10">Semester 10</option>
-            </select>
-          </label>
+    <main class="max-w-6xl mx-auto px-4 -mt-12 pb-32">
+        <div class="glass-card rounded-3xl shadow-2xl p-2 mb-10 flex flex-col md:flex-row items-center gap-2">
+            <input v-model="searchQuery" type="text" placeholder="Search textbooks, modules, or subjects..." 
+                   class="w-full bg-transparent p-5 outline-none text-lg font-medium text-white placeholder-white/30">
+            <div class="px-8 py-4 bg-red-700 text-white rounded-2xl font-black text-xs tracking-widest hidden md:block whitespace-nowrap">
+                {{ filteredResources.length }} RESOURCES
+            </div>
         </div>
 
-        <div class="search-sticky">
-          <div class="search-bar">
-            <span class="search-icon" aria-hidden="true">⌕</span>
-            <label class="visually-hidden" for="resource-search">Search resources</label>
-            <input id="resource-search" type="search" placeholder="Search textbooks, subjects, or PYQ years…" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-suggestions">
-            <button class="clear-search" id="clear-search" type="button" data-action="clear-search" aria-label="Clear search" hidden>×</button>
-            <div class="resource-counter" id="resource-counter" aria-live="polite" hidden><span class="counter-dot"></span><strong id="resource-count">—</strong><span>resources</span></div>
-            <div class="suggestions" id="search-suggestions" role="listbox" hidden></div>
-          </div>
+        <div class="space-y-4 mb-12">
+            <div class="flex gap-3 overflow-x-auto no-scrollbar">
+                <button @click="semFilter = 'All'" :class="filterClass(semFilter === 'All')">All Sems</button>
+                <button v-for="n in 10" :key="'sem'+n" @click="semFilter = n.toString()" :class="filterClass(semFilter === n.toString())">SEM {{n}}</button>
+            </div>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar">
+                <button @click="typeFilter = 'All'" :class="filterClass(typeFilter === 'All')">📁 All Types</button>
+                <button v-for="t in ['Textbook', 'PYQ', 'Notes']" :key="t" @click="typeFilter = t" :class="filterClass(typeFilter === t)">{{t}}s</button>
+            </div>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar">
+                <button @click="subjectFilter = 'All'" :class="filterClass(subjectFilter === 'All')">🎓 All Subjects</button>
+                <button v-for="sub in subjectStats" :key="sub.name" @click="subjectFilter = sub.name" :class="filterClass(subjectFilter === sub.name)">
+                    {{sub.name}} ({{sub.count}})
+                </button>
+            </div>
         </div>
 
-        <div class="filters" aria-label="Filter resources">
-          <div class="filter-line"><span class="filter-label">SEMESTER</span><div class="chips" id="semester-filters"></div></div>
-          <div class="filter-line"><span class="filter-label">RESOURCE TYPE</span><div class="chips" id="type-filters"></div></div>
-          <div class="filter-line subject-filter-line"><span class="filter-label">SUBJECT</span><div class="chips" id="subject-filters"><span class="filter-hint">Subjects appear when the library loads.</span></div></div>
+        <div v-if="loading" class="text-center py-24">
+            <div class="animate-spin rounded-full h-14 w-14 border-b-4 border-red-700 mx-auto"></div>
+            <p class="mt-6 text-red-200 font-black text-xs uppercase tracking-[0.3em]">Mapping Database...</p>
         </div>
-      </section>
 
-      <section class="discovery wrap" aria-labelledby="discovery-title">
-        <div class="section-heading-row">
-          <div><p class="eyebrow eyebrow-red">A LITTLE DIRECTION</p><h2 id="discovery-title">What students are opening</h2></div>
-          <p class="local-note"><span aria-hidden="true">◉</span> Your activity stays on this device</p>
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div v-for="item in filteredResources" :key="item.id"
+                 class="glass-card rounded-[2.5rem] p-8 card-hover transition-all duration-300 border-l-8 border-red-700">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-[10px] font-black px-4 py-1.5 rounded-full bg-red-700 text-white uppercase">Sem {{item.semester}}</span>
+                    <span class="text-[11px] font-bold text-white/40 uppercase tracking-widest">{{item.type}}</span>
+                </div>
+                <h3 class="text-2xl font-extrabold text-white leading-tight mb-2 min-h-[3rem]">{{item.title}}</h3>
+                <p class="text-red-300/60 text-[10px] font-bold uppercase tracking-widest mb-8">{{item.subject}}</p>
+                <div class="pt-6 border-t border-white/10">
+                    <a :href="item.link" target="_blank" class="group inline-flex items-center gap-3 font-black text-xs text-red-400 tracking-widest uppercase hover:text-white transition-colors">
+                        Access Resource →
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="discovery-grid">
-          <article class="discovery-card">
-            <div class="discovery-card-head"><span class="icon-tile icon-warm" aria-hidden="true">↗</span><div><h3>Most opened PYQs this week</h3><p>Based on your recent activity here</p></div></div>
-            <ol id="weekly-pyqs" class="discovery-list"><li class="discovery-empty">Your recently opened PYQs will appear here.</li></ol>
-          </article>
-          <article class="discovery-card discovery-card-red">
-            <div class="discovery-card-head"><span class="icon-tile icon-light" aria-hidden="true">✳</span><div><h3 id="semester-trend-title">Trending notes for your semester</h3><p>Notes you return to, tracked privately</p></div></div>
-            <ol id="semester-notes" class="discovery-list"><li class="discovery-empty">Choose your semester above to see relevant notes.</li></ol>
-          </article>
-        </div>
-      </section>
-
-      <section class="resources-section wrap" aria-labelledby="results-title">
-        <div class="results-heading">
-          <div><p class="eyebrow eyebrow-red">THE COLLECTION</p><h2 id="results-title">Library resources</h2></div>
-          <div class="results-tools">
-            <span id="active-filter-label" class="active-filter-label">All resources</span>
-            <button type="button" class="text-button" data-action="reset-filters">Reset filters</button>
-          </div>
-        </div>
-        <p id="results-summary" class="results-summary" aria-live="polite">Loading the collection…</p>
-        <div id="loading-skeletons" class="resource-grid" aria-label="Loading resources">
-          <article class="skeleton-card"><div class="skeleton-line skeleton-short"></div><div class="skeleton-title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-wide"></div><div class="skeleton-button"></div></article>
-          <article class="skeleton-card"><div class="skeleton-line skeleton-short"></div><div class="skeleton-title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-wide"></div><div class="skeleton-button"></div></article>
-          <article class="skeleton-card"><div class="skeleton-line skeleton-short"></div><div class="skeleton-title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-wide"></div><div class="skeleton-button"></div></article>
-          <article class="skeleton-card"><div class="skeleton-line skeleton-short"></div><div class="skeleton-title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-wide"></div><div class="skeleton-button"></div></article>
-          <article class="skeleton-card"><div class="skeleton-line skeleton-short"></div><div class="skeleton-title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-wide"></div><div class="skeleton-button"></div></article>
-          <article class="skeleton-card"><div class="skeleton-line skeleton-short"></div><div class="skeleton-title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-wide"></div><div class="skeleton-button"></div></article>
-        </div>
-        <div id="resource-grid" class="resource-grid" hidden></div>
-        <div id="empty-state" class="empty-state" hidden>
-          <span class="empty-mark" aria-hidden="true">⌕</span><h3 id="empty-title">No resources found</h3><p id="empty-copy">Try another search or clear a filter.</p>
-          <button class="button button-outline" type="button" data-action="reset-filters">Clear filters</button>
-        </div>
-        <div id="error-state" class="empty-state error-state" hidden>
-          <span class="empty-mark" aria-hidden="true">!</span><h3>We couldn’t reach the library.</h3><p>Check your connection and try loading the collection again.</p>
-          <button class="button button-primary" type="button" data-action="retry-load">Try again</button>
-        </div>
-      </section>
-
-      <section class="community-band wrap" aria-label="Student contributions and requests">
-        <div class="community-copy"><p class="eyebrow eyebrow-light">A LIBRARY BUILT TOGETHER</p><h2>Have something<br>worth sharing?</h2><p>Add a resource for your classmates or ask the subcommittee to find a missing one.</p></div>
-        <div class="community-actions"><button type="button" class="button button-light" data-action="open-contribute">Contribute a resource <span aria-hidden="true">↗</span></button><button type="button" class="button button-ghost-light" data-action="open-request">Request a resource <span aria-hidden="true">＋</span></button></div>
-      </section>
-
-      <section class="contributors wrap" id="contributors" aria-labelledby="contributors-title">
-        <div class="section-heading-row">
-          <div><p class="eyebrow eyebrow-red">PEOPLE MAKE THE LIBRARY</p><h2 id="contributors-title">Top contributors</h2><p class="section-copy">Every shared note saves someone else a little time.</p></div>
-          <span class="local-badge">LOCAL SHOWCASE</span>
-        </div>
-        <div id="contributor-board" class="contributor-board"></div>
-        <p class="privacy-note">This demo leaderboard and badges are saved only in this browser. A shared, campus-wide leaderboard needs a central contribution service.</p>
-      </section>
     </main>
 
-    <footer class="footer">
-      <div class="wrap footer-grid">
-        <div class="footer-about"><a class="footer-brand" href="#top"><img src="https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" alt="" width="42" height="42"><span>ABHIMANYU<br><b>LEARNING SPACE</b></span></a><p>A digital initiative by the <strong>SFI IMSc Subcommittee</strong>. Named in honor of Comrade Abhimanyu, this platform supports open access to learning resources for every student.</p></div>
-        <div><p class="footer-label">GET IN TOUCH</p><a class="footer-email" href="mailto:sfiimscsubcommittee25@gmail.com">sfiimscsubcommittee25@gmail.com</a><p class="footer-muted">CUSAT · Kochi, Kerala</p></div>
-        <div><p class="footer-label">STAY CONNECTED</p><a class="footer-social" href="https://whatsapp.com/channel/0029VaesYjiHgZWZT1NwWo1z" target="_blank" rel="noopener noreferrer">WhatsApp community <span aria-hidden="true">↗</span></a><a class="footer-social" href="https://www.instagram.com/sfi_imsc_subcommittee_cusat" target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a></div>
-      </div>
-      <div class="wrap footer-bottom"><span>© 2026 SFI IMSc Subcommittee · CUSAT</span><span>Study · Share · Grow</span></div>
-    </footer>
-  </div>
+    <button @click="showUpload = true" class="fixed bottom-8 right-8 bg-red-700 text-white px-8 py-5 rounded-3xl shadow-2xl hover:scale-105 transition-all z-50 font-black uppercase tracking-widest text-xs">
+        Contribute
+    </button>
 
-  <a class="floating-community" href="https://whatsapp.com/channel/0029VaesYjiHgZWZT1NwWo1z" target="_blank" rel="noopener noreferrer" aria-label="Join the SFI IMSc WhatsApp community"><span class="whatsapp-mark" aria-hidden="true">◉</span><span>Join the community</span></a>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div v-if="showUpload" class="fixed inset-0 bg-slate-900/95 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
+        <div class="glass-card border-white/20 rounded-[3rem] max-w-xl w-full p-8 md:p-12 relative overflow-y-auto max-h-[90vh]">
+            <button @click="showUpload = false" class="absolute top-8 right-8 text-white/40 hover:text-white text-4xl">&times;</button>
+            <h2 class="text-3xl font-black text-white mb-2 uppercase italic tracking-tighter">Add to Library</h2>
+            
+            <div class="bg-white/5 rounded-2xl p-4 mb-6 text-[10px] leading-relaxed text-white/60 border border-white/10">
+                <p class="font-black text-red-400 mb-1">⚠️ GUIDE / നിർദ്ദേശം:</p>
+                <p>1. Google Drive ലിങ്ക് 'Anyone with the link can view' എന്ന് സെറ്റ് ചെയ്യുക.</p>
+                <p>2. Ensure Drive link is set to 'Anyone with the link' before submitting.</p>
+            </div>
 
-  <dialog id="request-dialog" class="modal">
-    <form id="request-form" class="modal-card">
-      <button class="modal-close" type="button" data-action="close-modal" aria-label="Close">×</button>
-      <p class="eyebrow eyebrow-red">HELP US COMPLETE THE SHELF</p><h2>Request a resource</h2>
-      <p class="modal-copy">Tell the subcommittee what’s missing. Submitting opens an email draft addressed to the team.</p>
-      <label class="field-label" for="request-title">Resource or topic <span>*</span></label><input id="request-title" name="title" required maxlength="140" placeholder="e.g. Linear Algebra textbook">
-      <div class="form-pair"><div><label class="field-label" for="request-semester">Semester</label><select id="request-semester" name="semester"><option value="">Any semester</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div><div><label class="field-label" for="request-type">Resource type</label><select id="request-type" name="type"><option>Textbook</option><option>PYQ</option><option>Notes</option><option>Other</option></select></div></div>
-      <label class="field-label" for="request-subject">Subject</label><input id="request-subject" name="subject" maxlength="100" placeholder="Subject name">
-      <label class="field-label" for="request-notes">Anything else to add?</label><textarea id="request-notes" name="notes" rows="3" maxlength="500" placeholder="Edition, year, or a little more detail…"></textarea>
-      <button class="button button-primary button-full" type="submit">Continue to email <span aria-hidden="true">↗</span></button>
-    </form>
-  </dialog>
-
-  <dialog id="contribute-dialog" class="modal">
-    <form id="contribute-form" class="modal-card">
-      <button class="modal-close" type="button" data-action="close-modal" aria-label="Close">×</button>
-      <p class="eyebrow eyebrow-red">PASS IT FORWARD</p><h2>Contribute to the library</h2>
-      <p class="modal-copy">Share a viewable Google Drive resource with the SFI IMSc Subcommittee for review.</p>
-      <label class="field-label" for="contribution-title">Resource title <span>*</span></label><input id="contribution-title" name="title" required maxlength="140" placeholder="Title of textbook, notes, or PYQ">
-      <div class="form-pair"><div><label class="field-label" for="contribution-semester">Semester</label><select id="contribution-semester" name="semester"><option value="1">Semester 1</option><option value="2">Semester 2</option><option value="3">Semester 3</option><option value="4">Semester 4</option><option value="5">Semester 5</option><option value="6">Semester 6</option><option value="7">Semester 7</option><option value="8">Semester 8</option><option value="9">Semester 9</option><option value="10">Semester 10</option></select></div><div><label class="field-label" for="contribution-type">Type</label><select id="contribution-type" name="type"><option value="Notes">Notes</option><option value="PYQ">PYQ</option><option value="Textbook">Textbook</option></select></div></div>
-      <label class="field-label" for="contribution-subject">Subject <span>*</span></label><input id="contribution-subject" name="subject" required maxlength="100" placeholder="e.g. Mathematics">
-      <label class="field-label" for="contribution-link">Google Drive link <span>*</span></label><input id="contribution-link" name="link" required type="url" placeholder="https://drive.google.com/…"><p class="field-hint" id="drive-hint">Set sharing to “Anyone with the link can view”.</p>
-      <label class="field-label" for="contributor-name">Your name (optional)</label><input id="contributor-name" name="contributor" maxlength="60" placeholder="How you’d like to be recognized">
-      <button class="button button-primary button-full" type="submit" id="contribute-submit">Send for review <span aria-hidden="true">↗</span></button>
-      <p class="form-footnote">The current library form does not return a delivery receipt. Your browser will show that a submission was attempted, not verify acceptance.</p>
-    </form>
-  </dialog>
-
-  <dialog id="comments-dialog" class="modal">
-    <div class="modal-card comment-modal-card">
-      <button class="modal-close" type="button" data-action="close-modal" aria-label="Close">×</button>
-      <p class="eyebrow eyebrow-red">STUDENT NOTES</p><h2 id="comments-title">Resource feedback</h2>
-      <p class="modal-copy">Feedback is saved privately in this browser.</p>
-      <div id="comment-list" class="comment-list"></div>
-      <form id="comment-form" class="comment-form"><label class="field-label" for="comment-text">Share a quick note</label><textarea id="comment-text" rows="3" maxlength="400" placeholder="e.g. This PDF is missing page 42…" required></textarea><button class="button button-primary button-full" type="submit">Add note</button></form>
-      <button class="text-button report-button" type="button" data-action="report-active-resource">Request a correction or missing page</button>
+            <form @submit.prevent="submitForm" class="space-y-4">
+                <input v-model="newEntry.title" required placeholder="Resource Title" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
+                <div class="grid grid-cols-2 gap-4">
+                    <select v-model="newEntry.semester" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
+                        <option v-for="n in 10" :key="'opt'+n" :value="n" class="bg-slate-900">Sem {{n}}</option>
+                    </select>
+                    <select v-model="newEntry.type" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
+                        <option value="Notes" class="bg-slate-900">Notes</option>
+                        <option value="PYQ" class="bg-slate-900">PYQ</option>
+                        <option value="Textbook" class="bg-slate-900">Textbook</option>
+                    </select>
+                </div>
+                <input v-model="newEntry.subject" required placeholder="Subject (e.g. Mathematics)" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
+                <div class="space-y-2">
+                    <input v-model="newEntry.link" @input="validateLink" required placeholder="Google Drive Link" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
+                    <p v-if="linkError" class="text-red-500 text-[10px] font-bold uppercase tracking-widest pl-2">Invalid Drive Link</p>
+                    <a v-if="newEntry.link && !linkError" :href="newEntry.link" target="_blank" class="text-[10px] font-black text-blue-400 uppercase tracking-widest pl-2">👁️ Preview Link</a>
+                </div>
+                <button type="submit" :disabled="uploading || linkError" class="w-full bg-red-700 text-white font-black py-5 rounded-2xl shadow-xl disabled:opacity-50">
+                    {{ uploading ? 'SUBMITTING...' : 'SUBMIT TO SUBCOMMITTEE' }}
+                </button>
+            </form>
+        </div>
     </div>
-  </dialog>
 
-  <template id="resource-card-template">
-    <article class="resource-card"></article>
-  </template>
+    <div v-if="showSuccess" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] w-full max-w-md px-4">
+        <div class="glass-card bg-green-500/20 border-green-500/50 p-6 rounded-3xl text-center shadow-2xl success-toast">
+            <p class="text-white font-black uppercase tracking-widest text-sm">✅ Submitted Successfully</p>
+        </div>
+    </div>
+
+    <footer class="glass-card border-t border-white/10 pt-20 pb-10 mt-20">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-16 mb-16">
+                <div>
+                    <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs mb-6">🏛️ About Us</h4>
+                    <p class="text-white/60 text-sm leading-relaxed font-medium">
+                        A digital initiative by the <span class="text-white">SFI IMSc Subcommittee</span>. Named in honor of Comrade Abhimanyu, this platform democratizes access to verified academic resources for every student.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs mb-6">📬 Contact</h4>
+                    <p class="text-white/60 text-sm font-bold tracking-tight italic mb-2">sfiimscsubcommittee25@gmail.com</p>
+                    <p class="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">CUSAT</p>
+                </div>
+                <div>
+                    <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs mb-6">🔗 Community</h4>
+                    <div class="flex flex-col gap-3">
+                        <a href="https://whatsapp.com/channel/0029VaesYjiHgZWZT1NwWo1z" target="_blank" class="glass-card px-5 py-3 rounded-2xl text-[11px] font-bold text-white uppercase hover:bg-red-700 text-center">WhatsApp</a>
+                        <a href="https://www.instagram.com/sfi_imsc_subcommittee_cusat" target="_blank" class="glass-card px-5 py-3 rounded-2xl text-[11px] font-bold text-white uppercase hover:bg-red-700 text-center">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-10 border-t border-white/5 text-center">
+                <p class="text-[10px] font-black text-white/20 uppercase tracking-[0.5em]">&copy; 2026 SFI IMSc Subcommittee • CUSAT</p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script>
+    const { createApp } = Vue;
+    // Database Config
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTSKlLQMEpcnLtAEpyjG85WjHNWPeKP2er_baGRjtjxsAUjFo7z7gu5aahKpmh0FN9O0nYtIh1dpQTq/pub?output=csv';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyzNdCjP_4xrbCazD8H_2jsz63OlFGKdn1FnZhhkXcaNs-hHF8YJWVV1fxz7ZNLKbM1/exec'; 
+
+    createApp({
+        data() {
+            return {
+                semFilter: 'All', typeFilter: 'All', subjectFilter: 'All', searchQuery: '',
+                resources: [], loading: true, showUpload: false, uploading: false, showSuccess: false,
+                linkError: false, newEntry: { title: '', semester: 1, type: 'Notes', subject: '', link: '' }
+            }
+        },
+        computed: {
+            subjectStats() {
+                const counts = {};
+                this.resources.forEach(r => { if(r.subject) counts[r.subject] = (counts[r.subject] || 0) + 1; });
+                return Object.keys(counts).sort().map(name => ({ name, count: counts[name] }));
+            },
+            filteredResources() {
+                return this.resources.filter(r => {
+                    const matchesSem = this.semFilter === 'All' || String(r.semester) === this.semFilter;
+                    const matchesType = this.typeFilter === 'All' || r.type === this.typeFilter;
+                    const matchesSub = this.subjectFilter === 'All' || r.subject === this.subjectFilter;
+                    const matchesSearch = r.title.toLowerCase().includes(this.searchQuery.toLowerCase());
+                    return matchesSem && matchesType && matchesSub && matchesSearch;
+                });
+            }
+        },
+        methods: {
+            filterClass(active) {
+                const base = 'whitespace-nowrap px-6 py-3 rounded-2xl text-[10px] font-black uppercase transition-all border ';
+                return active ? 'bg-red-700 border-red-700 text-white shadow-xl scale-105' : 'bg-white/5 border-white/10 text-white/40 hover:text-white';
+            },
+            validateLink() { 
+                this.linkError = this.newEntry.link && !this.newEntry.link.includes('drive.google.com'); 
+            },
+            async submitForm() {
+                this.uploading = true;
+                try {
+                    // mode: 'no-cors' is required to talk to Google Apps Script effectively
+                    await fetch(GAS_URL, { 
+                        method: 'POST', 
+                        mode: 'no-cors',
+                        cache: 'no-cache',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(this.newEntry) 
+                    });
+                    
+                    this.showUpload = false; 
+                    this.showSuccess = true;
+                    setTimeout(() => this.showSuccess = false, 5000);
+                    this.newEntry = { title: '', semester: 1, type: 'Notes', subject: '', link: '' };
+                } catch (e) { 
+                    console.error(e);
+                    alert("Submission failed. Please check your internet connection."); 
+                } finally { 
+                    this.uploading = false; 
+                }
+            },
+            fetchData() {
+                Papa.parse(SHEET_URL, {
+                    download: true, header: true, skipEmptyLines: 'greedy',
+                    complete: (res) => {
+                        this.resources = res.data.map((row, i) => ({
+                            id: i, 
+                            title: row.Title || row.TITLE, 
+                            semester: row.Semester || row.SEMESTER,
+                            type: row.Type || row.TYPE, 
+                            subject: row.Subject || row.SUBJECT,
+                            link: row.Link || row.LINK
+                        })).filter(r => r.title && r.link);
+                        this.loading = false;
+                    }
+                });
+            }
+        },
+        mounted() { this.fetchData(); }
+    }).mount('#app')
+</script>
 </body>
 </html>
-
-```
-
-## app.js
-
-```javascript
-(() => {
-  'use strict';
-
-  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTSKlLQMEpcnLtAEpyjG85WjHNWPeKP2er_baGRjtjxsAUjFo7z7gu5aahKpmh0FN9O0nYtIh1dpQTq/pub?output=csv';
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbyzNdCjP_4xrbCazD8H_2jsz63OlFGKdn1FnZhhkXcaNs-hHF8YJWVV1fxz7ZNLKbM1/exec';
-  const REQUEST_EMAIL = 'sfiimscsubcommittee25@gmail.com';
-  const WHATSAPP_URL = 'https://whatsapp.com/channel/0029VaesYjiHgZWZT1NwWo1z';
-  const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-  const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
-
-  const state = {
-    resources: [], loading: true, loadError: false,
-    query: '', semester: 'All', type: 'All', subject: 'All',
-    savedSemester: safeGet('als_preferred_semester', ''),
-    theme: safeGet('als_theme', 'dark'), activeResourceId: null,
-    activeSuggestion: -1, toastTimer: null
-  };
-  state.semester = state.savedSemester || 'All';
-  $('#my-semester').value = state.savedSemester;
-
-  function safeGet(key, fallback) {
-    try {
-      const value = localStorage.getItem(key);
-      return value === null ? fallback : value;
-    } catch (_) { return fallback; }
-  }
-
-  function readJSON(key, fallback) {
-    try {
-      const value = JSON.parse(localStorage.getItem(key) || 'null');
-      return value === null ? fallback : value;
-    } catch (_) { return fallback; }
-  }
-
-  function writeJSON(key, value) {
-    try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) { showToast('Your browser could not save this preference.'); }
-  }
-
-  function escapeHTML(value) {
-    return String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
-  }
-
-  function normalizeType(value) {
-    const type = String(value || '').trim().toLowerCase();
-    if (type.includes('pyq') || type.includes('question')) return 'PYQ';
-    if (type.includes('note')) return 'Notes';
-    if (type.includes('text') || type.includes('book')) return 'Textbook';
-    return String(value || 'Resource').trim() || 'Resource';
-  }
-
-  function normaliseUrl(value) {
-    try {
-      const url = new URL(String(value || '').trim());
-      if (url.protocol === 'https:' || url.protocol === 'http:') return url.href;
-    } catch (_) { /* invalid spreadsheet URL */ }
-    return '';
-  }
-
-  function getValue(row, ...names) {
-    const keys = Object.keys(row || {});
-    for (const name of names) {
-      const match = keys.find(key => key.trim().toLowerCase() === name.toLowerCase());
-      if (match && String(row[match] ?? '').trim()) return String(row[match]).trim();
-    }
-    return '';
-  }
-
-  function yearFrom(title) {
-    const match = String(title || '').match(/\b(?:19|20)\d{2}\b/);
-    return match ? match[0] : '';
-  }
-
-  function mapRow(row, index) {
-    const title = getValue(row, 'Title', 'TITL');
-    const link = normaliseUrl(getValue(row, 'Link'));
-    const semesterRaw = getValue(row, 'Semester');
-    const semesterMatch = semesterRaw.match(/\d{1,2}/);
-    const semester = semesterMatch ? String(Math.min(10, Math.max(1, Number(semesterMatch[0])))) : '';
-    return {
-      id: String(index), title, link, semester,
-      type: normalizeType(getValue(row, 'Type')),
-      subject: getValue(row, 'Subject') || 'General',
-      year: yearFrom(title)
-    };
-  }
-
-  function setTheme(theme, save = true) {
-    state.theme = theme === 'light' ? 'light' : 'dark';
-    document.body.classList.toggle('light-theme', state.theme === 'light');
-    $('#theme-label').textContent = state.theme === 'dark' ? 'Light mode' : 'Dark mode';
-    $('.theme-icon').textContent = state.theme === 'dark' ? '☼' : '☾';
-    if (save) {
-      try { localStorage.setItem('als_theme', state.theme); } catch (_) { /* theme still applies for this session */ }
-    }
-  }
-
-  function showToast(message) {
-    const toast = $('#toast');
-    toast.textContent = message;
-    toast.classList.add('is-visible');
-    clearTimeout(state.toastTimer);
-    state.toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 3800);
-  }
-
-  function getRatings() { return readJSON('als_resource_feedback', {}); }
-  function saveRatings(value) { writeJSON('als_resource_feedback', value); }
-  function getLogs() { return readJSON('als_resource_opens', []); }
-  function getContributors() { return readJSON('als_local_contributors', []); }
-
-  function filteredResources() {
-    const query = state.query.trim().toLowerCase();
-    return state.resources.filter(resource => {
-      const semesterMatch = state.semester === 'All' || resource.semester === state.semester;
-      const typeMatch = state.type === 'All' || resource.type === state.type;
-      const subjectMatch = state.subject === 'All' || resource.subject === state.subject;
-      const searchable = `${resource.title} ${resource.subject} ${resource.type} ${resource.semester} ${resource.year}`.toLowerCase();
-      return semesterMatch && typeMatch && subjectMatch && (!query || searchable.includes(query));
-    });
-  }
-
-  function renderSemesterFilters() {
-    const choices = ['All', ...Array.from({ length: 10 }, (_, i) => String(i + 1))];
-    $('#semester-filters').innerHTML = choices.map(value => {
-      const label = value === 'All' ? 'All semesters' : `Sem ${value}`;
-      return `<button class="filter-chip${state.semester === value ? ' is-active' : ''}" type="button" data-action="filter-semester" data-value="${value}" aria-pressed="${state.semester === value}">${label}</button>`;
-    }).join('');
-  }
-
-  function renderTypeFilters() {
-    const choices = ['All', 'Textbook', 'PYQ', 'Notes'];
-    $('#type-filters').innerHTML = choices.map(value => {
-      const label = value === 'All' ? 'All types' : value === 'PYQ' ? 'PYQs' : value === 'Textbook' ? 'Textbooks' : 'Notes';
-      return `<button class="filter-chip${state.type === value ? ' is-active' : ''}" type="button" data-action="filter-type" data-value="${escapeHTML(value)}" aria-pressed="${state.type === value}">${label}</button>`;
-    }).join('');
-  }
-
-  function renderSubjectFilters() {
-    const counts = new Map();
-    state.resources.forEach(resource => counts.set(resource.subject, (counts.get(resource.subject) || 0) + 1));
-    const subjects = Array.from(counts.entries())
-      .filter(([name]) => !['all subject', 'all subjects'].includes(name.trim().toLowerCase()))
-      .sort((a, b) => a[0].localeCompare(b[0]));
-    if (!subjects.length) {
-      $('#subject-filters').innerHTML = '<span class="filter-hint">Subject filters will appear when resources load.</span>';
-      return;
-    }
-    const choices = [['All', 0], ...subjects];
-    $('#subject-filters').innerHTML = choices.map(([value, count]) => {
-      const active = state.subject === value;
-      const label = value === 'All' ? 'All subjects' : `${escapeHTML(value)} <span aria-hidden="true">${count}</span>`;
-      return `<button class="filter-chip${active ? ' is-active' : ''}" type="button" data-action="filter-subject" data-value="${escapeHTML(value)}" aria-pressed="${active}">${label}</button>`;
-    }).join('');
-  }
-
-  function cardHTML(resource) {
-    const ratings = getRatings();
-    const feedback = ratings[resource.id] || { helpful: 0, mine: false, comments: [] };
-    const typeMark = resource.type === 'PYQ' ? '▤' : resource.type === 'Notes' ? '✎' : '▧';
-    const commentCount = Array.isArray(feedback.comments) ? feedback.comments.length : 0;
-    return `<article class="resource-card">
-      <div class="resource-meta"><span class="semester-tag">Semester ${escapeHTML(resource.semester || '—')}</span><span class="type-tag">${escapeHTML(resource.type)}</span></div>
-      <div class="card-mark" aria-hidden="true">${typeMark}</div>
-      <h3>${escapeHTML(resource.title)}</h3>
-      <p class="resource-subject">${escapeHTML(resource.subject)}</p>
-      <div class="resource-card-bottom">
-        <a class="resource-open" href="${escapeHTML(resource.link)}" target="_blank" rel="noopener noreferrer" data-resource-open="${escapeHTML(resource.id)}">Open resource <span aria-hidden="true">↗</span></a>
-        <div class="card-feedback" aria-label="Local feedback">
-          <button class="feedback-button${feedback.mine ? ' is-active' : ''}" type="button" data-action="helpful" data-id="${escapeHTML(resource.id)}" aria-label="Mark ${escapeHTML(resource.title)} useful"><span aria-hidden="true">♥</span>${Number(feedback.helpful) || 0}</button>
-          <button class="feedback-button" type="button" data-action="open-comments" data-id="${escapeHTML(resource.id)}" aria-label="Read or add notes on ${escapeHTML(resource.title)}"><span aria-hidden="true">☷</span>${commentCount}</button>
-        </div>
-      </div>
-    </article>`;
-  }
-
-  function updateResults() {
-    const skeletons = $('#loading-skeletons');
-    const grid = $('#resource-grid');
-    const empty = $('#empty-state');
-    const error = $('#error-state');
-    const counter = $('#resource-counter');
-    const summary = $('#results-summary');
-
-    skeletons.hidden = !state.loading;
-    grid.hidden = state.loading || state.loadError;
-    empty.hidden = true;
-    error.hidden = !state.loadError;
-    counter.hidden = state.loading || state.loadError;
-
-    if (state.loading) {
-      summary.textContent = 'Mapping your study shelf…';
-      $('#active-filter-label').textContent = 'Loading library';
-      return;
-    }
-    if (state.loadError) {
-      summary.textContent = 'The resource list is temporarily unavailable.';
-      $('#active-filter-label').textContent = 'Connection needed';
-      return;
-    }
-
-    const resources = filteredResources();
-    $('#resource-count').textContent = resources.length.toLocaleString();
-    grid.innerHTML = resources.map(cardHTML).join('');
-    if (!resources.length) {
-      grid.hidden = true;
-      empty.hidden = false;
-      const hasAnyResources = state.resources.length > 0;
-      $('#empty-title').textContent = hasAnyResources ? 'No resources match those filters.' : 'The library is ready for its first resource.';
-      $('#empty-copy').textContent = hasAnyResources ? 'Try another search or clear a filter to see more of the collection.' : 'Check back soon, or help grow the shelf by contributing a resource.';
-    } else {
-      grid.hidden = false;
-    }
-    summary.textContent = `${resources.length.toLocaleString()} ${resources.length === 1 ? 'resource' : 'resources'} shown${state.query ? ` for “${state.query}”` : ''}.`;
-    const labels = [];
-    if (state.semester !== 'All') labels.push(`Sem ${state.semester}`);
-    if (state.type !== 'All') labels.push(state.type === 'PYQ' ? 'PYQs' : state.type);
-    if (state.subject !== 'All') labels.push(state.subject);
-    $('#active-filter-label').textContent = labels.length ? labels.join(' · ') : 'All resources';
-  }
-
-  function openCountMap(logs = getLogs()) {
-    const cutoff = Date.now() - WEEK_MS;
-    const counts = new Map();
-    logs.filter(item => Number(item.at) >= cutoff).forEach(item => counts.set(String(item.id), (counts.get(String(item.id)) || 0) + 1));
-    return counts;
-  }
-
-  function renderRankedList(container, items, counts, emptyText) {
-    if (!items.length) {
-      container.innerHTML = `<li class="discovery-empty">${escapeHTML(emptyText)}</li>`;
-      return;
-    }
-    container.innerHTML = items.map((resource, index) => {
-      const count = counts.get(String(resource.id)) || 0;
-      const countLabel = `${count} ${count === 1 ? 'open' : 'opens'} this week`;
-      return `<li class="discovery-item"><span class="discovery-rank">0${index + 1}</span><button class="discovery-link" type="button" data-action="scroll-to-resource" data-id="${escapeHTML(resource.id)}" title="${escapeHTML(resource.title)}">${escapeHTML(resource.title)}</button><span class="discovery-count">${countLabel}</span></li>`;
-    }).join('');
-  }
-
-  function renderDiscovery() {
-    const logs = getLogs();
-    const counts = openCountMap(logs);
-    const pyqs = state.resources.filter(resource => resource.type === 'PYQ' && (counts.get(String(resource.id)) || 0) > 0)
-      .sort((a, b) => (counts.get(String(b.id)) || 0) - (counts.get(String(a.id)) || 0) || a.title.localeCompare(b.title)).slice(0, 3);
-    renderRankedList($('#weekly-pyqs'), pyqs, counts, 'Open a PYQ from the library and your most-used papers will be collected here for the next 7 days. This history stays on your device.');
-
-    const semester = state.savedSemester || (state.semester !== 'All' ? state.semester : '');
-    $('#semester-trend-title').textContent = semester ? `Trending notes for Sem ${semester}` : 'Trending notes for your semester';
-    const notes = semester ? state.resources.filter(resource => resource.semester === semester && resource.type === 'Notes' && (counts.get(String(resource.id)) || 0) > 0)
-      .sort((a, b) => (counts.get(String(b.id)) || 0) - (counts.get(String(a.id)) || 0) || a.title.localeCompare(b.title)).slice(0, 3) : [];
-    renderRankedList($('#semester-notes'), notes, counts, semester ? 'Open a note from this semester and your most-used notes will appear here.' : 'Choose your semester above to see relevant notes. Activity is counted only on this device.');
-  }
-
-  function badgeFor(contributor, contributors) {
-    const badges = [];
-    if (contributor.count >= 1) badges.push('First share');
-    if (contributor.count >= 3) badges.push('Note Ninja');
-    const topMonth = contributors.reduce((best, item) => !best || item.monthCount > best.monthCount ? item : best, null);
-    if (topMonth && topMonth.name === contributor.name && contributor.monthCount > 0) badges.push('Comrade of the Month');
-    return badges;
-  }
-
-  function renderContributors() {
-    const contributors = getContributors().filter(item => item && item.name && Number(item.count) > 0)
-      .sort((a, b) => (Number(b.monthCount) || 0) - (Number(a.monthCount) || 0) || (Number(b.count) || 0) - (Number(a.count) || 0));
-    const board = $('#contributor-board');
-    if (!contributors.length) {
-      board.innerHTML = '<div class="contributor-empty">The board is ready for its first contribution. Add a name when you share a resource to create a private contribution record on this device.</div>';
-      return;
-    }
-    board.innerHTML = contributors.slice(0, 3).map((contributor, index) => {
-      const badges = badgeFor(contributor, contributors);
-      return `<article class="contributor-card"><span class="contributor-rank">${index + 1}</span><div class="contributor-info"><h3 class="contributor-name">${escapeHTML(contributor.name)}</h3><p class="contributor-count">${Number(contributor.count)} submission ${Number(contributor.count) === 1 ? 'attempt' : 'attempts'} · this month ${Number(contributor.monthCount) || 0}</p><div class="contributor-badges">${badges.map(badge => `<span class="contributor-badge">${escapeHTML(badge)}</span>`).join('')}</div></div></article>`;
-    }).join('');
-  }
-
-  function renderAll() {
-    renderSemesterFilters();
-    renderTypeFilters();
-    renderSubjectFilters();
-    updateResults();
-    renderDiscovery();
-    renderContributors();
-  }
-
-  function recordOpen(id) {
-    const logs = getLogs().filter(item => Number(item.at) > Date.now() - 30 * 24 * 60 * 60 * 1000);
-    logs.push({ id: String(id), at: Date.now() });
-    writeJSON('als_resource_opens', logs.slice(-250));
-    renderDiscovery();
-  }
-
-  function loadLibrary() {
-    state.loading = true;
-    state.loadError = false;
-    updateResults();
-    if (!window.Papa) {
-      state.loading = false;
-      state.loadError = true;
-      updateResults();
-      return;
-    }
-    window.Papa.parse(SHEET_URL, {
-      download: true,
-      header: true,
-      skipEmptyLines: 'greedy',
-      complete: result => {
-        const resources = (result.data || []).map(mapRow).filter(item => item.title && item.link);
-        state.resources = resources;
-        state.loading = false;
-        state.loadError = false;
-        renderAll();
-      },
-      error: () => {
-        state.resources = [];
-        state.loading = false;
-        state.loadError = true;
-        renderAll();
-      }
-    });
-  }
-
-  function suggestionsFor(query) {
-    const needle = query.trim().toLowerCase();
-    if (!needle) return [];
-    const suggestions = new Map();
-    state.resources.forEach(resource => {
-      const pairs = [[resource.title, 'Title'], [resource.subject, 'Subject']];
-      if (resource.type === 'PYQ' && resource.year) pairs.push([resource.year, 'PYQ year']);
-      pairs.forEach(([value, kind]) => {
-        if (value && value.toLowerCase().includes(needle)) {
-          const key = `${kind}:${value}`;
-          if (!suggestions.has(key)) suggestions.set(key, { value, kind });
-        }
-      });
-    });
-    return Array.from(suggestions.values()).sort((a, b) => {
-      const exact = Number(a.value.toLowerCase().startsWith(needle));
-      const other = Number(b.value.toLowerCase().startsWith(needle));
-      return other - exact || a.value.localeCompare(b.value);
-    }).slice(0, 8);
-  }
-
-  function renderSuggestions() {
-    const box = $('#search-suggestions');
-    const options = suggestionsFor(state.query);
-    state.activeSuggestion = -1;
-    if (!state.query.trim() || !options.length) {
-      box.hidden = true;
-      box.innerHTML = '';
-      $('#resource-search').setAttribute('aria-expanded', 'false');
-      return;
-    }
-    box.innerHTML = options.map((item, index) => `<button class="suggestion-option" type="button" role="option" aria-selected="false" data-action="select-suggestion" data-index="${index}" data-value="${escapeHTML(item.value)}" data-kind="${escapeHTML(item.kind)}"><span class="suggestion-value">${escapeHTML(item.value)}</span><span class="suggestion-kind">${escapeHTML(item.kind)}</span></button>`).join('');
-    box.hidden = false;
-    $('#resource-search').setAttribute('aria-expanded', 'true');
-  }
-
-  function closeDialog(dialog) { if (dialog.open) dialog.close(); }
-
-  function openRequest(resource) {
-    const form = $('#request-form');
-    form.reset();
-    if (state.savedSemester) $('#request-semester').value = state.savedSemester;
-    if (resource) {
-      $('#request-title').value = resource.title;
-      $('#request-semester').value = resource.semester || '';
-      $('#request-type').value = resource.type;
-      $('#request-subject').value = resource.subject;
-      $('#request-notes').value = `Please check this resource: ${resource.link}`;
-    }
-    $('#request-dialog').showModal();
-    $('#request-title').focus();
-  }
-
-  function openContribute() {
-    $('#contribute-form').reset();
-    if (state.savedSemester) $('#contribution-semester').value = state.savedSemester;
-    $('#contribute-dialog').showModal();
-    $('#contribution-title').focus();
-  }
-
-  function openComments(id) {
-    const resource = state.resources.find(item => item.id === String(id));
-    if (!resource) return;
-    state.activeResourceId = resource.id;
-    $('#comments-title').textContent = resource.title;
-    renderComments();
-    $('#comments-dialog').showModal();
-  }
-
-  function renderComments() {
-    const feedback = getRatings()[state.activeResourceId] || { comments: [] };
-    const comments = Array.isArray(feedback.comments) ? feedback.comments : [];
-    $('#comment-list').innerHTML = comments.length ? comments.map(comment => {
-      const date = new Date(Number(comment.at) || Date.now());
-      return `<article class="comment-item"><p>${escapeHTML(comment.text)}</p><time>${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · saved on this device</time></article>`;
-    }).join('') : '<div class="comment-empty">No notes yet. Add a quick heads-up or let classmates know why you found this useful. Notes stay in this browser.</div>';
-  }
-
-  function updateHelpful(id) {
-    const ratings = getRatings();
-    const item = ratings[String(id)] || { helpful: 0, mine: false, comments: [] };
-    if (item.mine) item.helpful = Math.max(0, (Number(item.helpful) || 0) - 1);
-    else item.helpful = (Number(item.helpful) || 0) + 1;
-    item.mine = !item.mine;
-    ratings[String(id)] = item;
-    saveRatings(ratings);
-    updateResults();
-  }
-
-  function trackContribution(name) {
-    const contributorName = String(name || '').trim() || 'Anonymous contributor';
-    const contributors = getContributors();
-    const month = new Date().toISOString().slice(0, 7);
-    let contributor = contributors.find(item => item.name.toLowerCase() === contributorName.toLowerCase());
-    if (!contributor) {
-      contributor = { name: contributorName, count: 0, monthCount: 0, month };
-      contributors.push(contributor);
-    }
-    if (contributor.month !== month) { contributor.month = month; contributor.monthCount = 0; }
-    contributor.count = (Number(contributor.count) || 0) + 1;
-    contributor.monthCount = (Number(contributor.monthCount) || 0) + 1;
-    writeJSON('als_local_contributors', contributors);
-    renderContributors();
-  }
-
-  function handleAction(button) {
-    const action = button.dataset.action;
-    const value = button.dataset.value;
-    const id = button.dataset.id;
-    switch (action) {
-      case 'toggle-theme': setTheme(state.theme === 'dark' ? 'light' : 'dark'); break;
-      case 'clear-search':
-        state.query = '';
-        $('#resource-search').value = '';
-        $('#clear-search').hidden = true;
-        renderSuggestions(); renderAll();
-        $('#resource-search').focus();
-        break;
-      case 'filter-semester': state.semester = value; renderAll(); break;
-      case 'filter-type': state.type = value; renderAll(); break;
-      case 'filter-subject': state.subject = value; renderAll(); break;
-      case 'reset-filters':
-        state.semester = state.savedSemester || 'All'; state.type = 'All'; state.subject = 'All'; state.query = '';
-        $('#resource-search').value = '';
-        $('#clear-search').hidden = true;
-        renderSuggestions(); renderAll();
-        break;
-      case 'retry-load': loadLibrary(); break;
-      case 'open-request': openRequest(); break;
-      case 'open-contribute': openContribute(); break;
-      case 'close-modal': closeDialog(button.closest('dialog')); break;
-      case 'helpful': updateHelpful(id); break;
-      case 'open-comments': openComments(id); break;
-      case 'select-suggestion': {
-        const kind = button.dataset.kind;
-        state.query = kind === 'Subject' ? '' : value;
-        $('#resource-search').value = kind === 'Subject' ? '' : value;
-        $('#clear-search').hidden = !state.query;
-        if (kind === 'Subject') { state.subject = value; state.semester = state.savedSemester || 'All'; }
-        renderSuggestions(); renderAll();
-        $('#resource-search').focus();
-        break;
-      }
-      case 'scroll-to-resource': {
-        const resource = state.resources.find(item => item.id === String(id));
-        if (!resource) break;
-        state.semester = 'All'; state.type = 'All'; state.subject = 'All'; state.query = '';
-        $('#resource-search').value = '';
-        $('#clear-search').hidden = true;
-        renderAll();
-        requestAnimationFrame(() => {
-          const card = $$('.resource-card').find(element => element.querySelector(`[data-resource-open="${CSS.escape(String(id))}"]`));
-          if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); card.classList.add('highlight-card'); setTimeout(() => card.classList.remove('highlight-card'), 1700); }
-        });
-        break;
-      }
-      case 'report-active-resource': {
-        const resource = state.resources.find(item => item.id === state.activeResourceId);
-        closeDialog($('#comments-dialog'));
-        openRequest(resource);
-        break;
-      }
-    }
-  }
-
-  document.addEventListener('click', event => {
-    const actionButton = event.target.closest('[data-action]');
-    if (actionButton) { handleAction(actionButton); return; }
-    const link = event.target.closest('[data-resource-open]');
-    if (link) recordOpen(link.dataset.resourceOpen);
-    if (!event.target.closest('.search-bar')) {
-      $('#search-suggestions').hidden = true;
-      $('#resource-search').setAttribute('aria-expanded', 'false');
-    }
-  });
-
-  $('#resource-search').addEventListener('input', event => {
-    state.query = event.target.value;
-    $('#clear-search').hidden = !state.query;
-    renderSuggestions();
-    updateResults();
-  });
-
-  $('#resource-search').addEventListener('keydown', event => {
-    const box = $('#search-suggestions');
-    const options = $$('.suggestion-option', box);
-    if (event.key === 'ArrowDown' && options.length) {
-      event.preventDefault(); state.activeSuggestion = (state.activeSuggestion + 1) % options.length;
-      options.forEach((option, index) => option.setAttribute('aria-selected', String(index === state.activeSuggestion)));
-    } else if (event.key === 'ArrowUp' && options.length) {
-      event.preventDefault(); state.activeSuggestion = (state.activeSuggestion - 1 + options.length) % options.length;
-      options.forEach((option, index) => option.setAttribute('aria-selected', String(index === state.activeSuggestion)));
-    } else if (event.key === 'Enter' && state.activeSuggestion >= 0 && options[state.activeSuggestion]) {
-      event.preventDefault(); handleAction(options[state.activeSuggestion]);
-    } else if (event.key === 'Escape') {
-      box.hidden = true; event.target.setAttribute('aria-expanded', 'false');
-    }
-  });
-
-  $('#my-semester').addEventListener('change', event => {
-    state.savedSemester = event.target.value;
-    state.semester = state.savedSemester || 'All';
-    try {
-      if (state.savedSemester) localStorage.setItem('als_preferred_semester', state.savedSemester);
-      else localStorage.removeItem('als_preferred_semester');
-    } catch (_) { /* preference remains active for this session */ }
-    renderAll();
-    if (state.savedSemester) showToast(`Your library is now focused on Semester ${state.savedSemester}.`);
-  });
-
-  $('#request-form').addEventListener('submit', event => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const subject = String(form.get('subject') || '').trim();
-    const semester = String(form.get('semester') || '').trim();
-    const type = String(form.get('type') || 'Resource').trim();
-    const title = String(form.get('title') || '').trim();
-    const notes = String(form.get('notes') || '').trim();
-    const emailSubject = `Digital library resource request: ${title}`;
-    const body = [`Requested resource: ${title}`, `Type: ${type}`, `Semester: ${semester || 'Any semester'}`, `Subject: ${subject || 'Not specified'}`, '', notes ? `Details: ${notes}` : 'Details: —'].join('\n');
-    const mailto = `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailto;
-    closeDialog($('#request-dialog'));
-    showToast('Your email app should open with the request addressed to the subcommittee.');
-  });
-
-  $('#contribute-form').addEventListener('submit', async event => {
-    event.preventDefault();
-    const contributionForm = event.currentTarget;
-    const form = new FormData(contributionForm);
-    const link = normaliseUrl(form.get('link'));
-    if (!link || !new URL(link).hostname.toLowerCase().endsWith('drive.google.com')) {
-      $('#drive-hint').textContent = 'Please use a valid Google Drive link.';
-      $('#drive-hint').style.color = 'var(--red)';
-      $('#contribution-link').focus();
-      return;
-    }
-    $('#drive-hint').textContent = 'Set sharing to “Anyone with the link can view”.';
-    $('#drive-hint').style.color = '';
-    const payload = {
-      title: String(form.get('title') || '').trim(),
-      semester: Number(form.get('semester')) || 1,
-      type: String(form.get('type') || 'Notes'),
-      subject: String(form.get('subject') || '').trim(),
-      link
-    };
-    const contributorName = String(form.get('contributor') || '').trim();
-    const submit = $('#contribute-submit');
-    submit.disabled = true;
-    submit.textContent = 'Sending…';
-    try {
-      await fetch(GAS_URL, { method: 'POST', mode: 'no-cors', cache: 'no-cache', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      trackContribution(contributorName);
-      closeDialog($('#contribute-dialog'));
-      contributionForm.reset();
-      showToast('Submission attempted. The existing form cannot confirm delivery or review status; contact the subcommittee if you need a receipt.');
-    } catch (_) {
-      showToast('Could not submit right now. Please email the subcommittee directly.');
-    } finally {
-      submit.disabled = false;
-      submit.innerHTML = 'Send for review <span aria-hidden="true">↗</span>';
-    }
-  });
-
-  $('#comment-form').addEventListener('submit', event => {
-    event.preventDefault();
-    const text = String(new FormData(event.currentTarget).get('comment-text') || $('#comment-text').value).trim();
-    if (!text || state.activeResourceId === null) return;
-    const ratings = getRatings();
-    const item = ratings[state.activeResourceId] || { helpful: 0, mine: false, comments: [] };
-    item.comments = Array.isArray(item.comments) ? item.comments : [];
-    item.comments.push({ text, at: Date.now() });
-    ratings[state.activeResourceId] = item;
-    saveRatings(ratings);
-    event.currentTarget.reset();
-    renderComments();
-    updateResults();
-    showToast('Your note is saved in this browser. It is not shared with other students.');
-  });
-
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') {
-      const open = $('dialog[open]');
-      if (open) closeDialog(open);
-    }
-  });
-  $$('.modal').forEach(dialog => dialog.addEventListener('click', event => {
-    if (event.target === dialog) closeDialog(dialog);
-  }));
-
-  setTheme(state.theme, false);
-  renderSemesterFilters();
-  renderTypeFilters();
-  updateResults();
-  loadLibrary();
-})();
-
-```
-
-## styles.css
-
-```css
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
-
-:root {
-  color-scheme: dark;
-  --bg: #0d1728;
-  --bg-soft: #111e32;
-  --surface: #14243a;
-  --surface-2: #182a42;
-  --surface-raised: #1a2c43;
-  --text: #f5f4ef;
-  --text-strong: #fffefa;
-  --muted: #a8b2c1;
-  --quiet: #748198;
-  --line: rgba(235, 238, 242, .13);
-  --line-strong: rgba(235, 238, 242, .22);
-  --red: #d6484b;
-  --red-deep: #aa2d35;
-  --red-soft: #f3d4cf;
-  --gold: #edc67b;
-  --green: #7bc6a4;
-  --shadow: 0 22px 65px rgba(0, 0, 0, .22);
-  --radius: 22px;
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 120px; }
-body { margin: 0; min-width: 320px; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; transition: background .25s ease, color .25s ease; }
-button, input, select, textarea { font: inherit; }
-button { color: inherit; }
-a { color: inherit; }
-img { display: block; max-width: 100%; }
-[hidden] { display: none !important; }
-.wrap { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
-.visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.skip-link { position: fixed; z-index: 1000; left: 16px; top: 12px; padding: 12px 16px; background: var(--text-strong); color: #101a2b; border-radius: 9px; transform: translateY(-160%); }
-.skip-link:focus { transform: translateY(0); }
-.site-shell { overflow: clip; }
-
-.hero { position: relative; min-height: 540px; padding-bottom: 85px; isolation: isolate; background: #541a22; overflow: hidden; }
-.hero::before { content: ''; position: absolute; z-index: -2; inset: 0; background: linear-gradient(100deg, rgba(74, 13, 24, .92) 2%, rgba(111, 24, 35, .78) 49%, rgba(15, 24, 39, .72) 100%), url('https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/cusat.jpg') center 44% / cover no-repeat; filter: saturate(.83); }
-.hero::after { content: ''; position: absolute; z-index: -1; inset: auto 0 0; height: 33%; background: linear-gradient(0deg, var(--bg) 0%, transparent 100%); pointer-events: none; }
-.top-nav { height: 86px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,.16); }
-.brand-mini, .footer-brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; }
-.brand-mini img, .footer-brand img { border-radius: 50%; background: #fff; padding: 3px; }
-.brand-mini span, .footer-brand span { display: flex; flex-direction: column; font: 800 10px/1.45 'Manrope', sans-serif; letter-spacing: .18em; }
-.brand-mini b, .footer-brand b { font-weight: 500; color: rgba(255,255,255,.7); }
-.top-actions { display: flex; align-items: center; gap: 27px; }
-.nav-link { color: rgba(255,255,255,.8); text-decoration: none; font-size: 13px; font-weight: 600; transition: color .2s ease; }
-.nav-link:hover { color: #fff; }
-.theme-toggle { display: inline-flex; align-items: center; gap: 8px; padding: 10px 13px; border: 1px solid rgba(255,255,255,.24); border-radius: 999px; background: rgba(15,23,42,.24); color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
-.theme-toggle:hover { background: rgba(255,255,255,.15); }
-.theme-icon { font-size: 15px; line-height: 1; }
-.hero-content { padding: 61px 0 0; text-align: center; }
-.logo-pair { display: flex; justify-content: center; align-items: center; gap: 14px; margin: 0 auto 23px; }
-.logo-pair img { border-radius: 50%; border: 3px solid rgba(255,255,255,.72); background: #fff; padding: 3px; box-shadow: 0 10px 26px rgba(12,12,20,.2); }
-.eyebrow { margin: 0 0 14px; color: rgba(255,255,255,.77); font: 800 10px/1.2 'Manrope', sans-serif; letter-spacing: .22em; }
-.eyebrow-red { color: var(--red); }
-.eyebrow-light { color: rgba(255,255,255,.69); }
-.hero h1 { margin: 0 auto; max-width: 760px; color: #fff; font: 800 clamp(38px, 6.5vw, 76px)/1.05 'Manrope', sans-serif; letter-spacing: -.065em; text-wrap: balance; }
-.mobile-break { display: none; }
-.hero-subtitle { max-width: 580px; margin: 21px auto 24px; color: rgba(255,255,255,.78); font-size: 15px; line-height: 1.7; }
-.hero-cta { display: inline-flex; align-items: center; gap: 13px; padding: 12px 17px; border: 1px solid rgba(255,255,255,.34); border-radius: 999px; color: #fff; background: rgba(12,21,36,.23); font-size: 12px; font-weight: 700; text-decoration: none; transition: background .2s, transform .2s; }
-.hero-cta:hover { background: rgba(255,255,255,.15); transform: translateY(-2px); }
-.hero-ribbon { position: absolute; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 13px max(24px, calc((100% - 1160px) / 2)); color: rgba(255,255,255,.47); border-top: 1px solid rgba(255,255,255,.14); font: 700 9px 'Manrope', sans-serif; letter-spacing: .2em; }
-
-.library-head { position: relative; margin-top: -34px; padding: 37px 38px 26px; border: 1px solid var(--line); border-radius: 26px; background: color-mix(in srgb, var(--surface) 93%, transparent); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
-.section-intro, .section-heading-row, .results-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
-.section-intro h2, .section-heading-row h2, .results-heading h2 { margin: 0; color: var(--text-strong); font: 800 clamp(25px, 3vw, 34px)/1.1 'Manrope', sans-serif; letter-spacing: -.045em; }
-.section-copy { max-width: 560px; margin: 10px 0 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
-.semester-select-wrap { min-width: 178px; display: flex; flex-direction: column; gap: 7px; }
-.select-caption, .filter-label { color: var(--quiet); font: 800 9px 'Manrope', sans-serif; letter-spacing: .17em; }
-.semester-select-wrap select, .field-label + select, .form-pair select { width: 100%; padding: 12px 37px 12px 13px; color: var(--text); border: 1px solid var(--line-strong); border-radius: 12px; background-color: var(--surface-2); outline: none; cursor: pointer; }
-.semester-select-wrap select:focus, input:focus, textarea:focus, select:focus { border-color: var(--red) !important; box-shadow: 0 0 0 3px color-mix(in srgb, var(--red) 18%, transparent); }
-.search-sticky { position: sticky; top: 12px; z-index: 20; margin-top: 24px; }
-.search-bar { position: relative; display: flex; align-items: center; gap: 13px; min-height: 65px; padding: 8px 9px 8px 18px; border: 1px solid var(--line-strong); border-radius: 17px; background: var(--bg-soft); box-shadow: 0 11px 30px rgba(0,0,0,.19); }
-.search-icon { color: var(--red); font: 400 28px/1 'DM Sans', sans-serif; transform: rotate(-18deg); }
-.search-bar input { flex: 1; min-width: 0; height: 44px; color: var(--text-strong); border: 0; outline: 0; background: transparent; font-size: 15px; }
-.search-bar input:focus { box-shadow: none; }
-.search-bar input::placeholder { color: var(--quiet); }
-.clear-search { width: 31px; height: 31px; border: 0; border-radius: 50%; background: var(--surface-raised); color: var(--muted); font-size: 20px; cursor: pointer; }
-.resource-counter { flex: none; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; background: var(--red-deep); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
-.resource-counter strong { font: 800 14px 'Manrope', sans-serif; }
-.counter-dot { width: 6px; height: 6px; border-radius: 50%; background: #ffc9bd; }
-.suggestions { position: absolute; top: calc(100% + 9px); left: 0; right: 0; z-index: 30; max-height: 310px; overflow-y: auto; padding: 7px; border: 1px solid var(--line-strong); border-radius: 15px; background: var(--surface); box-shadow: var(--shadow); }
-.suggestion-option { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 11px 13px; border: 0; border-radius: 9px; color: var(--text); background: transparent; text-align: left; cursor: pointer; }
-.suggestion-option:hover, .suggestion-option[aria-selected="true"] { background: var(--surface-raised); }
-.suggestion-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
-.suggestion-kind { flex: none; color: var(--quiet); font: 700 9px 'Manrope', sans-serif; letter-spacing: .1em; text-transform: uppercase; }
-.suggestion-empty { padding: 12px 13px; color: var(--muted); font-size: 12px; }
-.filters { display: grid; gap: 11px; padding-top: 21px; }
-.filter-line { display: flex; align-items: flex-start; gap: 17px; min-height: 32px; }
-.filter-label { flex: 0 0 92px; padding-top: 9px; }
-.chips { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
-.filter-chip { padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 700; white-space: nowrap; cursor: pointer; transition: color .18s, background .18s, border .18s; }
-.filter-chip:hover { color: var(--text); border-color: var(--line-strong); }
-.filter-chip.is-active { color: #fff; background: var(--red-deep); border-color: var(--red-deep); }
-.filter-hint { padding: 7px 0; color: var(--quiet); font-size: 11px; }
-
-.discovery, .resources-section, .contributors { padding-top: 80px; }
-.section-heading-row { align-items: flex-end; }
-.local-note { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 3px; color: var(--quiet); font-size: 11px; }
-.local-note span { color: var(--green); font-size: 13px; }
-.discovery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 22px; }
-.discovery-card { min-height: 243px; padding: 24px 25px 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
-.discovery-card-red { background: linear-gradient(145deg, color-mix(in srgb, var(--red-deep) 82%, var(--surface)), color-mix(in srgb, var(--red-deep) 58%, var(--surface))); }
-.discovery-card-head { display: flex; align-items: center; gap: 14px; }
-.icon-tile { display: grid; place-items: center; width: 43px; height: 43px; flex: none; border-radius: 14px; font-size: 21px; font-weight: 700; }
-.icon-warm { color: #271915; background: var(--gold); }
-.icon-light { color: #7e2026; background: #f4d6ca; }
-.discovery-card h3 { margin: 0; color: #fff; font: 800 15px/1.35 'Manrope', sans-serif; }
-.discovery-card-head p { margin: 4px 0 0; color: rgba(255,255,255,.69); font-size: 10px; }
-.discovery-list { display: grid; gap: 3px; margin: 19px 0 0; padding: 0; list-style: none; }
-.discovery-item { display: flex; align-items: center; gap: 11px; min-width: 0; padding: 9px 1px; border-top: 1px solid rgba(255,255,255,.1); }
-.discovery-rank { color: rgba(255,255,255,.48); font: 800 11px 'Manrope', sans-serif; }
-.discovery-link { flex: 1; min-width: 0; border: 0; color: #fff; background: none; text-align: left; font-size: 12px; font-weight: 700; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.discovery-link:hover { text-decoration: underline; }
-.discovery-count { flex: none; color: rgba(255,255,255,.65); font-size: 9px; }
-.discovery-empty { padding: 16px 2px; color: rgba(255,255,255,.69); font-size: 12px; line-height: 1.5; }
-.results-heading { align-items: flex-end; }
-.results-tools { display: inline-flex; align-items: center; gap: 14px; }
-.active-filter-label { color: var(--quiet); font-size: 11px; }
-.text-button { padding: 5px 0; border: 0; background: transparent; color: var(--red); font-size: 11px; font-weight: 700; text-decoration: none; cursor: pointer; }
-.text-button:hover { text-decoration: underline; }
-.results-summary { min-height: 18px; margin: 11px 0 21px; color: var(--muted); font-size: 12px; }
-.resource-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
-.resource-card { min-height: 252px; display: flex; flex-direction: column; padding: 21px; border: 1px solid var(--line); border-radius: 19px; background: var(--surface); transition: transform .2s ease, border-color .2s ease, background .2s ease; }
-.resource-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--red) 45%, var(--line)); background: var(--surface-2); }
-.resource-card.highlight-card { border-color: var(--gold); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent); }
-.resource-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.semester-tag, .type-tag { display: inline-flex; align-items: center; gap: 6px; font: 800 9px 'Manrope', sans-serif; letter-spacing: .11em; text-transform: uppercase; }
-.semester-tag { padding: 7px 9px; border-radius: 999px; color: #fff; background: var(--red-deep); }
-.type-tag { color: var(--quiet); }
-.card-mark { margin: 18px 0 10px; color: var(--gold); font-size: 18px; }
-.resource-card h3 { display: -webkit-box; margin: 0; overflow: hidden; color: var(--text-strong); font: 800 17px/1.35 'Manrope', sans-serif; letter-spacing: -.025em; line-clamp: 2; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.resource-subject { margin: 8px 0 18px; color: var(--red); font-size: 10px; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
-.resource-card-bottom { margin-top: auto; padding-top: 13px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.resource-open { display: inline-flex; align-items: center; gap: 7px; color: var(--text); text-decoration: none; font-size: 11px; font-weight: 800; }
-.resource-open:hover { color: var(--red); }
-.card-feedback { display: flex; align-items: center; gap: 8px; }
-.feedback-button { display: inline-flex; align-items: center; gap: 4px; padding: 6px 7px; border: 0; border-radius: 8px; background: transparent; color: var(--quiet); font-size: 10px; cursor: pointer; }
-.feedback-button:hover, .feedback-button.is-active { color: var(--red); background: color-mix(in srgb, var(--red) 10%, transparent); }
-.feedback-button span { font-size: 13px; }
-.skeleton-card { min-height: 252px; padding: 21px; border: 1px solid var(--line); border-radius: 19px; background: var(--surface); overflow: hidden; }
-.skeleton-line, .skeleton-title, .skeleton-button { position: relative; overflow: hidden; border-radius: 7px; background: var(--surface-raised); }
-.skeleton-line::after, .skeleton-title::after, .skeleton-button::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); animation: shimmer 1.25s infinite; }
-.skeleton-line { height: 10px; width: 46%; margin-bottom: 12px; }
-.skeleton-short { width: 27%; height: 24px; border-radius: 999px; margin-bottom: 22px; }
-.skeleton-title { width: 84%; height: 38px; margin-bottom: 12px; }
-.skeleton-wide { width: 61%; }
-.skeleton-button { height: 33px; width: 42%; margin-top: 27px; }
-@keyframes shimmer { to { transform: translateX(100%); } }
-.empty-state { padding: 52px 20px; border: 1px dashed var(--line-strong); border-radius: var(--radius); text-align: center; }
-.empty-mark { display: inline-grid; place-items: center; width: 49px; height: 49px; margin-bottom: 14px; border-radius: 16px; background: var(--surface); color: var(--red); font-size: 26px; }
-.empty-state h3 { margin: 0 0 7px; color: var(--text-strong); font: 800 19px 'Manrope', sans-serif; }
-.empty-state p { margin: 0 auto 19px; max-width: 430px; color: var(--muted); font-size: 13px; line-height: 1.6; }
-
-.community-band { display: flex; align-items: center; justify-content: space-between; gap: 35px; margin-top: 88px; padding: 41px 49px; border: 1px solid rgba(255,255,255,.16); border-radius: 25px; background: linear-gradient(110deg, #73252f 0%, #4e202d 57%, #321f2d 100%); box-shadow: var(--shadow); }
-.community-copy { max-width: 470px; }
-.community-copy h2 { margin: 0; color: #fff; font: 800 clamp(26px, 4vw, 38px)/1.1 'Manrope', sans-serif; letter-spacing: -.04em; }
-.community-copy p:last-child { margin: 11px 0 0; color: rgba(255,255,255,.75); font-size: 13px; line-height: 1.65; }
-.community-actions { display: flex; flex-direction: column; align-items: stretch; gap: 10px; min-width: 224px; }
-.button { min-height: 45px; display: inline-flex; justify-content: center; align-items: center; gap: 10px; padding: 11px 17px; border: 1px solid transparent; border-radius: 12px; font-size: 12px; font-weight: 800; text-align: center; text-decoration: none; cursor: pointer; transition: transform .16s, background .16s, border .16s; }
-.button:hover { transform: translateY(-1px); }
-.button-primary { background: var(--red-deep); color: #fff; }
-.button-primary:hover { background: #c03941; }
-.button-outline { border-color: var(--line-strong); background: transparent; color: var(--text); }
-.button-outline:hover { border-color: var(--red); }
-.button-light { background: #fff; color: #6e202a; }
-.button-light:hover { background: #f3e7df; }
-.button-ghost-light { border-color: rgba(255,255,255,.29); background: rgba(255,255,255,.04); color: #fff; }
-.button-ghost-light:hover { background: rgba(255,255,255,.12); }
-.button-full { width: 100%; margin-top: 9px; }
-.contributors { padding-bottom: 80px; }
-.local-badge { padding: 8px 11px; border: 1px solid var(--line); border-radius: 999px; color: var(--quiet); font: 800 8px 'Manrope', sans-serif; letter-spacing: .13em; }
-.contributor-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
-.contributor-card { min-height: 125px; display: flex; align-items: center; gap: 14px; padding: 20px; border: 1px solid var(--line); border-radius: 17px; background: var(--surface); }
-.contributor-rank { display: grid; place-items: center; flex: none; width: 42px; height: 42px; border-radius: 14px; background: var(--surface-2); color: var(--gold); font: 800 13px 'Manrope', sans-serif; }
-.contributor-info { flex: 1; min-width: 0; }
-.contributor-name { overflow: hidden; margin: 0; color: var(--text-strong); font: 800 14px 'Manrope', sans-serif; text-overflow: ellipsis; white-space: nowrap; }
-.contributor-count { margin: 4px 0 0; color: var(--muted); font-size: 10px; }
-.contributor-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
-.contributor-badge { padding: 4px 7px; border-radius: 999px; background: color-mix(in srgb, var(--gold) 16%, transparent); color: var(--gold); font-size: 8px; font-weight: 800; }
-.contributor-empty { grid-column: 1 / -1; padding: 23px; border: 1px dashed var(--line-strong); border-radius: 17px; color: var(--muted); font-size: 12px; line-height: 1.6; }
-.privacy-note { margin: 11px 0 0; color: var(--quiet); font-size: 10px; line-height: 1.6; }
-
-.footer { padding: 49px 0 19px; border-top: 1px solid var(--line); background: #0a1322; }
-.footer-grid { display: grid; grid-template-columns: 1.45fr 1fr .8fr; gap: 44px; padding-bottom: 36px; }
-.footer-brand { margin-bottom: 15px; }
-.footer-about > p { max-width: 435px; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.75; }
-.footer-about strong { color: var(--text); }
-.footer-label { margin: 4px 0 15px; color: var(--red); font: 800 9px 'Manrope', sans-serif; letter-spacing: .18em; }
-.footer-email, .footer-social { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 11px; color: var(--text); font-size: 11px; font-weight: 600; text-decoration: none; }
-.footer-social:hover, .footer-email:hover { color: var(--red); }
-.footer-muted { color: var(--quiet); font-size: 10px; }
-.footer-bottom { display: flex; justify-content: space-between; gap: 12px; padding-top: 17px; border-top: 1px solid var(--line); color: var(--quiet); font: 700 8px 'Manrope', sans-serif; letter-spacing: .12em; text-transform: uppercase; }
-.floating-community { position: fixed; z-index: 40; right: 24px; bottom: 22px; display: inline-flex; align-items: center; gap: 9px; padding: 12px 16px 12px 12px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; background: #236b54; color: #fff; box-shadow: 0 12px 28px rgba(0,0,0,.3); font-size: 11px; font-weight: 800; text-decoration: none; transition: transform .2s, background .2s; }
-.floating-community:hover { transform: translateY(-3px); background: #1b7958; }
-.whatsapp-mark { display: grid; place-items: center; width: 22px; height: 22px; border: 1px solid rgba(255,255,255,.7); border-radius: 50%; font-size: 12px; }
-.toast { position: fixed; z-index: 90; left: 50%; bottom: 82px; width: min(450px, calc(100% - 32px)); padding: 13px 17px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; border: 1px solid var(--line-strong); border-radius: 13px; background: var(--surface-raised); color: var(--text); box-shadow: var(--shadow); font-size: 12px; line-height: 1.5; transition: opacity .22s, transform .22s; }
-.toast.is-visible { transform: translate(-50%, 0); opacity: 1; }
-
-.modal { width: min(540px, calc(100% - 28px)); max-height: min(88vh, 850px); padding: 0; overflow: visible; border: 1px solid var(--line-strong); border-radius: 23px; background: var(--surface); color: var(--text); box-shadow: 0 30px 100px rgba(0,0,0,.48); }
-.modal::backdrop { background: rgba(4,9,16,.72); backdrop-filter: blur(5px); }
-.modal-card { position: relative; max-height: min(88vh, 850px); overflow-y: auto; padding: 31px; }
-.modal-card h2 { margin: 0; color: var(--text-strong); font: 800 26px/1.15 'Manrope', sans-serif; letter-spacing: -.04em; }
-.modal-copy { margin: 10px 0 22px; color: var(--muted); font-size: 12px; line-height: 1.6; }
-.modal-close { position: absolute; top: 19px; right: 19px; width: 33px; height: 33px; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--muted); font-size: 22px; line-height: 1; cursor: pointer; }
-.modal-close:hover { color: var(--text); background: var(--surface-raised); }
-.modal .eyebrow { padding-right: 36px; }
-.field-label { display: block; margin: 15px 0 7px; color: var(--text); font-size: 11px; font-weight: 700; }
-.field-label span { color: var(--red); }
-.modal input, .modal select, .modal textarea { width: 100%; min-height: 44px; padding: 11px 13px; border: 1px solid var(--line-strong); border-radius: 11px; background: var(--bg-soft); color: var(--text); outline: 0; font-size: 12px; }
-.modal textarea { resize: vertical; }
-.modal input::placeholder, .modal textarea::placeholder { color: var(--quiet); }
-.form-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.form-pair > div { min-width: 0; }
-.field-hint, .form-footnote { margin: 7px 0 0; color: var(--quiet); font-size: 10px; line-height: 1.55; }
-.form-footnote { padding: 10px 12px; border-radius: 9px; background: color-mix(in srgb, var(--gold) 8%, transparent); }
-.comment-modal-card { padding-top: 31px; }
-.comment-list { display: grid; gap: 9px; max-height: 260px; overflow-y: auto; }
-.comment-item { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-soft); }
-.comment-item p { margin: 0; color: var(--text); font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
-.comment-item time { display: block; margin-top: 6px; color: var(--quiet); font-size: 9px; }
-.comment-empty { padding: 14px; border: 1px dashed var(--line-strong); border-radius: 12px; color: var(--muted); font-size: 11px; line-height: 1.5; }
-.comment-form { margin-top: 17px; }
-.report-button { margin-top: 14px; }
-
-body.light-theme {
-  color-scheme: light;
-  --bg: #f7f5f0;
-  --bg-soft: #fffdfa;
-  --surface: #fffdfa;
-  --surface-2: #f0ede7;
-  --surface-raised: #e9e4dc;
-  --text: #253041;
-  --text-strong: #172234;
-  --muted: #697488;
-  --quiet: #8993a2;
-  --line: rgba(40, 51, 65, .12);
-  --line-strong: rgba(40, 51, 65, .21);
-  --red: #ae3741;
-  --red-deep: #a62d38;
-  --red-soft: #f3d4cf;
-  --gold: #a56b13;
-  --green: #288765;
-  --shadow: 0 18px 50px rgba(49, 42, 34, .11);
-}
-body.light-theme .hero::after { background: linear-gradient(0deg, var(--bg) 0%, transparent 100%); }
-body.light-theme .library-head { background: color-mix(in srgb, var(--surface) 94%, transparent); }
-body.light-theme .search-bar { background: var(--bg-soft); }
-body.light-theme .footer { background: #ece8e0; }
-body.light-theme .footer-brand b { color: var(--muted); }
-body.light-theme .footer-about > p, body.light-theme .footer-email, body.light-theme .footer-social { color: var(--muted); }
-body.light-theme .footer-about strong { color: var(--text-strong); }
-body.light-theme .footer-bottom { border-color: var(--line); }
-
-@media (max-width: 900px) {
-  .resource-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .community-band { padding: 34px; }
-  .footer-grid { grid-template-columns: 1.3fr 1fr; }
-  .footer-grid > :last-child { grid-column: 2; }
-}
-@media (max-width: 640px) {
-  .wrap { width: min(100% - 28px, 1160px); }
-  .hero { min-height: 500px; padding-bottom: 78px; }
-  .top-nav { height: 68px; }
-  .brand-mini { gap: 8px; }
-  .brand-mini img { width: 34px; height: 34px; }
-  .brand-mini span { font-size: 8px; }
-  .top-actions { gap: 10px; }
-  .nav-link { display: none; }
-  .theme-toggle { padding: 9px 11px; font-size: 10px; }
-  .hero-content { padding-top: 59px; }
-  .logo-pair img { width: 59px; height: 59px; }
-  .hero h1 { font-size: clamp(37px, 11vw, 57px); }
-  .mobile-break { display: initial; }
-  .hero-subtitle { max-width: 420px; font-size: 13px; }
-  .hero-ribbon { padding-inline: 15px; font-size: 7px; }
-  .library-head { margin-top: -27px; padding: 24px 17px 20px; border-radius: 20px; }
-  .section-intro { align-items: flex-start; flex-direction: column; gap: 16px; }
-  .section-intro h2, .section-heading-row h2, .results-heading h2 { font-size: 26px; }
-  .semester-select-wrap { width: 100%; }
-  .semester-select-wrap select { padding-block: 11px; }
-  .search-sticky { top: 7px; margin-top: 17px; }
-  .search-bar { min-height: 57px; gap: 8px; padding-left: 12px; padding-right: 56px; border-radius: 14px; }
-  .search-icon { font-size: 24px; }
-  .search-bar input { font-size: 12px; }
-  .resource-counter { gap: 5px; padding: 8px 9px; font-size: 8px; }
-  .resource-counter strong { font-size: 11px; }
-  .filters { gap: 10px; padding-top: 17px; }
-  .filter-line { flex-direction: column; gap: 6px; }
-  .filter-label { flex-basis: auto; padding-top: 0; }
-  .chips { flex-wrap: nowrap; width: 100%; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
-  .filter-chip { padding: 7px 10px; font-size: 9px; }
-  .discovery, .resources-section, .contributors { padding-top: 55px; }
-  .section-heading-row { align-items: flex-start; flex-direction: column; gap: 12px; }
-  .local-note { font-size: 10px; }
-  .discovery-grid { grid-template-columns: 1fr; gap: 12px; }
-  .discovery-card { min-height: 210px; padding: 19px; }
-  .results-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
-  .results-tools { width: 100%; justify-content: space-between; }
-  .results-summary { margin: 8px 0 15px; }
-  .resource-grid { grid-template-columns: 1fr; gap: 11px; }
-  .resource-card { min-height: 226px; padding: 18px; }
-  .resource-card h3 { font-size: 16px; }
-  .community-band { align-items: stretch; flex-direction: column; gap: 22px; margin-top: 59px; padding: 26px 22px; border-radius: 20px; }
-  .community-actions { min-width: 0; }
-  .community-copy h2 { font-size: 30px; }
-  .contributors { padding-bottom: 58px; }
-  .contributor-board { grid-template-columns: 1fr; gap: 9px; }
-  .contributor-card { min-height: 101px; padding: 15px; }
-  .footer { padding-top: 37px; }
-  .footer-grid { grid-template-columns: 1fr; gap: 24px; padding-bottom: 25px; }
-  .footer-grid > :last-child { grid-column: auto; }
-  .footer-bottom { font-size: 7px; }
-  .floating-community { right: 13px; bottom: 13px; padding: 10px 12px 10px 10px; font-size: 10px; }
-  .floating-community { width: 43px; height: 43px; justify-content: center; padding: 0; }
-  .floating-community > span:last-child { display: none; }
-  .toast { bottom: 72px; }
-  .modal-card { padding: 25px 19px 20px; }
-  .modal-card h2 { font-size: 23px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-}
-
-```
-
-## app.config.ts
-
-```typescript
-export default { logoUrl: "https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png" };
-
-```
-
-## manus-routes.json
-
-```json
-{"routes":[{"path":"/","title":"Abhimanyu Learning Space"}]}
-
-```
-
-## TODO.md
-
-```markdown
-# TODO
-
-## 1. Preserve the core library and contribution experience
-- [x] Preserve the existing resource library and contribution experience, including resource listings and filters for semesters 1–10, resource types (Textbooks, PYQs, Notes), and subjects.
-
-## 2. Improve loading states and resource-count behavior
-- [x] Replace the “Mapping Database...” state with animated resource-card skeletons.
-- [x] Hide or animate the resource count until loading completes so “0 RESOURCES” does not flash.
-
-## 3. Add sticky autocomplete search
-- [x] Add a sticky resource search bar with autocomplete suggestions spanning subjects, book titles, and PYQ years.
-
-## 4. Add persistent theme switching
-- [x] Provide a persistent dark-mode/light-mode toggle that works across the library interface.
-
-## 5. Add dynamically ranked discovery sections
-- [ ] Show dynamically ranked discovery sections such as “Most Accessed PYQs this week” and semester-specific highlights such as “Trending Notes for Sem 4.”
-- The preview ranks a student's own recent opens locally on their device. A genuinely shared campus-wide weekly ranking is not wired to a shared analytics endpoint yet.
-
-## 6. Add personalized semester dashboard
-- [x] Let students save their current semester through a lightweight profile or local storage and open directly to a personalized semester dashboard.
-
-## 7. Add resource requests
-- [x] Add a “Request a Resource” form for missing textbooks, PYQs, notes, or other academic materials.
-
-## 8. Add contributor recognition
-- [ ] Add a Top Contributors leaderboard with recognition badges such as “Note Ninja” and “Comrade of the Month.”
-- The preview keeps contribution attempts and badges only in the current browser. A shared leaderboard needs a central contribution service and moderation/verification rules.
-
-## 9. Keep student community accessible
-- [x] Provide a floating WhatsApp or Telegram link that keeps the existing student community easy to reach.
-
-## 10. Add peer feedback on resources
-- [ ] Add resource ratings and comments for peer feedback, with quick options to report missing pages or identify especially useful material.
-- The preview supports local usefulness votes and comments, including a missing-page/resource-correction request. They are not shared between students without a shared feedback service.
-
-```
-
-## README.md
-
-```markdown
-# Abhimanyu Learning Space — GitHub handoff
-
-## Files
-
-For a plain static GitHub Pages site, publish these three files together in the same folder (normally the repository root):
-
-- `index.html`
-- `styles.css`
-- `app.js`
-
-The page loads `styles.css` and `app.js` by relative filename. Keep those names and their folder location aligned.
-
-`app.config.ts` and `manus-routes.json` are configuration files for the existing Manus setup. GitHub Pages does not use them to serve this static page; keep them only if the repository also remains connected to Manus. `TODO.md` records the current feature status.
-
-## Publish with GitHub Pages
-
-1. Upload the three static site files to the repository root (or the folder selected in Pages settings).
-2. In the repository, open **Settings → Pages** and choose the branch and folder containing `index.html`.
-3. The resource list is fetched from the published Google Sheet. Keep that sheet published as CSV and verify its `Title`, `Semester`, `Type`, `Subject`, and `Link` columns.
-4. The contribution form posts to the existing Google Apps Script URL. Its browser request is opaque (`no-cors`), so the page can report an attempt but cannot confirm that the script accepted or stored it.
-
-## Current feature limits
-
-- Weekly discovery is based on opens saved in this browser, not campus-wide analytics.
-- Contributor counts and badges are local submission-attempt records, not verified or shared contributions.
-- Helpful votes and comments stay in this browser.
-- Resource requests open a prefilled email draft; the visitor still has to send it.
-
-For shared rankings, verified contributors, and shared feedback, connect these interfaces to a backend with validation, moderation, rate limits, and a clear privacy notice.
-
-```
-
-
