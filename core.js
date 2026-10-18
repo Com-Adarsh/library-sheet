@@ -28,17 +28,30 @@
     } catch (_) { return { semester: 'All', type: 'All', subject: 'All' }; }
   }
   function catalogue(parsed) {
-    const fields = (parsed.meta && parsed.meta.fields || []).map(f => text(f).toLowerCase());
-    if (!['title', 'semester', 'type', 'subject', 'link'].every(f => fields.includes(f))) {
-      throw new Error('The catalogue is missing required column headings.');
-    }
-    if ((parsed.errors || []).some(e => e.type === 'Quotes' || e.type === 'FieldMismatch')) {
+    const labels = new Map();
+    if ((parsed.errors || []).some(e => e.type === 'Quotes' || e.type === 'FieldMismatch') && !Array.isArray(parsed.data?.[0])) {
       throw new Error('The catalogue contains malformed CSV rows.');
     }
-    const labels = new Map();
-    return parsed.data.map((original, index) => {
+    const rows = Array.isArray(parsed.data) ? parsed.data : [];
+    const fields = (parsed.meta && parsed.meta.fields || []).map(f => text(f).toLowerCase());
+    if (!rows.length) throw new Error('The catalogue is empty.');
+    return rows.map((original, index) => {
       const row = {};
-      Object.entries(original).forEach(([key, value]) => { row[text(key).toLowerCase()] = text(value); });
+      if (Array.isArray(original)) {
+        const values = original.map(text);
+        const semesterIndex = values.findIndex(value => /^(?:sem(?:ester)?\s*)?(10|[1-9])$/i.test(value));
+        const start = semesterIndex > 0 ? semesterIndex : 1;
+        row.title = values.slice(0, start).join(', ');
+        row.semester = values[start] || '';
+        row.type = values[start + 1] || '';
+        row.subject = values[start + 2] || '';
+        row.link = values[start + 3] || '';
+      } else {
+        if (!['title', 'semester', 'type', 'subject', 'link'].every(f => fields.includes(f))) {
+          throw new Error('The catalogue is missing required column headings.');
+        }
+        Object.entries(original).forEach(([key, value]) => { row[text(key).toLowerCase()] = text(value); });
+      }
       const subjectKey = (row.subject || 'Unspecified').replace(/\s+/g, ' ').toLowerCase();
       if (!labels.has(subjectKey)) labels.set(subjectKey,
         subjectKey === 'evs' ? 'EVS' : subjectKey.replace(/\b\w/g, c => c.toUpperCase()));

@@ -137,8 +137,9 @@
           if (!response.ok) throw new Error('Catalogue request failed');
           const csv = await response.text();
           if (csv.length > 8 * 1024 * 1024) throw new Error('Catalogue exceeds this release’s size limit');
-          const parsed = Papa.parse(csv, { header: true, skipEmptyLines: 'greedy' });
-          const resources = LibraryCore.catalogue(parsed);
+          const parsed = Papa.parse(csv, { header: false, skipEmptyLines: 'greedy' });
+          if (!Array.isArray(parsed.data) || parsed.data.length < 2) throw new Error('The catalogue is empty.');
+          const resources = LibraryCore.catalogue({ data: parsed.data.slice(1) });
           const updatedAt = Date.now();
           this.resources = resources; this.lastUpdated = updatedAt; this.catalogueAvailable = true;
           try {
