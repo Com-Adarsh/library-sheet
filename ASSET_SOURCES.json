@@ -1,0 +1,68 @@
+[
+  {
+    "path": "assets/vendor/papaparse.min.js",
+    "source": "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js",
+    "bytes": 18907,
+    "sha256": "51eeb0a26e3c4906e99b05bd40893ba72543479060dfa49eb4febb576a439317"
+  },
+  {
+    "path": "assets/images/cusat.jpg",
+    "source": "https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/cusat.jpg",
+    "bytes": 16426,
+    "sha256": "6493f1457ae1ae5134b652db58389a083b1095ce69a69b93a78dc3ca61a8b2d5"
+  },
+  {
+    "path": "assets/fonts/OFL.txt",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/plusjakartasans/OFL.txt",
+    "bytes": 4402,
+    "sha256": "995c7199cab65954f545996326755daee7b63cc6b42b06c13da1f9502ab08a99"
+  },
+  {
+    "path": "assets/vendor/VUE-LICENSE.txt",
+    "source": "https://raw.githubusercontent.com/vuejs/core/main/LICENSE",
+    "bytes": 1112,
+    "sha256": "49190d1f742dd61e47fe816df4963e5186a2a62100d9122f9883a60ea32973ac"
+  },
+  {
+    "path": "assets/images/abhimanyu.png",
+    "source": "https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/abhimanyu.png",
+    "bytes": 844305,
+    "sha256": "a78b2bee6eadfa5a91a72074d520e78467b4b823b9998a4b5246bdd667a0665a"
+  },
+  {
+    "path": "assets/images/sfi-imsc-logo.png",
+    "source": "https://raw.githubusercontent.com/Com-Adarsh/library-sheet/main/sfi%20imsc%20logo.png",
+    "bytes": 140603,
+    "sha256": "f73517a981d9015e6efd05af7751d967cb06e225fcc0ba135154311f008db033"
+  },
+  {
+    "path": "assets/vendor/PAPAPARSE-LICENSE.txt",
+    "source": "https://raw.githubusercontent.com/mholt/PapaParse/5.3.2/LICENSE",
+    "bytes": 1079,
+    "sha256": "99aa68e4b42758b09828a46515f70369e5463458ab7a990189f641af2b8d9b4e"
+  },
+  {
+    "path": "assets/vendor/vue.global.prod.js",
+    "source": "https://unpkg.com/vue@3.5.44/dist/vue.global.prod.js",
+    "bytes": 170605,
+    "sha256": "e0a2a0866a8de8887542e24f3c218aad3d907b88f30966068792ba992296dc9f"
+  },
+  {
+    "path": "assets/fonts/plus-jakarta-0.ttf",
+    "source": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_qU7NSg.ttf",
+    "bytes": 63336,
+    "sha256": "076831b98043f50f829b6c91db3be4a844641f1c95bccff5c886ed87c661a852"
+  },
+  {
+    "path": "assets/fonts/plus-jakarta-1.ttf",
+    "source": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_d0nNSg.ttf",
+    "bytes": 63412,
+    "sha256": "50357df108c5d297ec4ece76aeddf49561f3794f67af077cfc2c711b7a75b439"
+  },
+  {
+    "path": "assets/fonts/plus-jakarta-2.ttf",
+    "source": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KUnNSg.ttf",
+    "bytes": 63372,
+    "sha256": "d9e0ddb4a15a0054ad84b4ded3b4b9f354a0b7df426e21a1363d6933728da9d5"
+  }
+]
