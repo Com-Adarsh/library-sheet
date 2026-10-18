@@ -1,10 +1,6 @@
 /* 4. LIBRARY UI — public catalogue, remembered filters, and contributions. */
 (function () {
   'use strict';
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.unregister())).catch(() => {});
-    if ('caches' in window) caches.keys().then(names => names.filter(name => name.startsWith('imsc-library-shell-')).forEach(name => caches.delete(name))).catch(() => {});
-  }
   const { createApp } = Vue;
   const PREF_KEY = 'imsc-library-preferences-v1';
   const blankEntry = () => ({ title: '', semester: 1, type: 'Notes', subject: '', link: '' });
