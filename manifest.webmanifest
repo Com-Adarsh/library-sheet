@@ -1,0 +1,13 @@
+{
+  "name": "Abhimanyu Learning Space",
+  "short_name": "Abhimanyu Library",
+  "description": "SFI IMSc Digital Library for CUSAT students.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f7f8fc",
+  "theme_color": "#182338",
+  "icons": [
+    { "src": "./abhimanyu.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./sfi-imsc-logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
