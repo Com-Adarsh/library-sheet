@@ -4,9 +4,9 @@ const assert = require('node:assert/strict');
 const vm = require('node:vm');
 const fs = require('node:fs');
 const path = require('node:path');
-const root = path.resolve(__dirname, '..');
-const core = require('../assets/core.js');
-const Papa = require('../assets/vendor/papaparse.min.js');
+const root = __dirname;
+const core = require('./core.js');
+const Papa = require('./papaparse.min.js');
 const csv = 'Title,Semester,Type,Subject,Link,Email\nAlgebra,Sem 1,Notes, Mathematics ,https://drive.google.com/file/d/example/view,private@example.test\n';
 const parsed = () => Papa.parse(csv, { header: true, skipEmptyLines: 'greedy' });
 
@@ -39,7 +39,7 @@ function appHarness({ online = true, saved, network, writeFails = false } = {}) 
     fetch: async () => { fetches++; return network ? network() : new Response(csv); },
     AbortController, setTimeout, clearTimeout, URL, console, window: {}
   };
-  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/app.js'), 'utf8'), context);
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'app.js'), 'utf8'), context);
   const app = options.data();
   for (const [name, method] of Object.entries(options.methods)) app[name] = method.bind(app);
   return { app, get fetches() { return fetches; }, get written() { return written; } };
@@ -132,8 +132,8 @@ test('worker precaches all required files without forcing an update', async () =
 test('offline navigation and app scripts are served entirely from the shell cache', async () => {
   const h = workerHarness(); await h.dispatch('install');
   const page = await h.dispatch('fetch', { request: { method: 'GET', mode: 'navigate', url: 'https://example.test/?source=homescreen' } });
-  assert.match(await page.text(), /ABHIMANYU LEARNING SPACE/);
-  const script = await h.dispatch('fetch', { request: { method: 'GET', mode: 'cors', url: 'https://example.test/assets/app.js' } });
+  assert.match(await page.text(), /Abhimanyu Learning Space/);
+  const script = await h.dispatch('fetch', { request: { method: 'GET', mode: 'cors', url: 'https://example.test/app.js' } });
   assert.match(await script.text(), /createApp/); assert.equal(h.network, 0);
 });
 test('Google Drive, catalogue, POST and document navigations bypass the worker cache', async () => {
@@ -146,7 +146,7 @@ test('Google Drive, catalogue, POST and document navigations bypass the worker c
   ]) assert.equal(await h.dispatch('fetch', { request }), undefined);
 });
 test('a missing required asset rejects worker installation', async () => {
-  const h = workerHarness('/assets/app.js');
+  const h = workerHarness('/app.js');
   await assert.rejects(h.dispatch('install'), /asset unavailable/); assert.equal(h.skips, 0);
 });
 test('only an explicit update message asks the waiting worker to activate', async () => {
