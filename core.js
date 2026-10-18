@@ -35,7 +35,7 @@
     const rows = Array.isArray(parsed.data) ? parsed.data : [];
     const fields = (parsed.meta && parsed.meta.fields || []).map(f => text(f).toLowerCase());
     if (!rows.length) throw new Error('The catalogue is empty.');
-    return rows.map((original, index) => {
+    const resources = rows.map((original, index) => {
       const row = {};
       if (Array.isArray(original)) {
         const values = original.map(text);
@@ -61,6 +61,8 @@
         subject: labels.get(subjectKey), link: safeLink(row.link)
       };
     }).filter(row => row.title);
+    if (!resources.length) throw new Error('The catalogue contains no usable resource titles.');
+    return resources;
   }
   return { safeLink, semester, preferences, catalogue };
 });

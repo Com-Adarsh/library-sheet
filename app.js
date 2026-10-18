@@ -136,6 +136,7 @@
           const parsed = Papa.parse(csv, { header: false, skipEmptyLines: 'greedy' });
           if (!Array.isArray(parsed.data) || parsed.data.length < 2) throw new Error('The catalogue is empty.');
           const resources = LibraryCore.catalogue({ data: parsed.data.slice(1) });
+          if (!resources.length) throw new Error('No usable catalogue records returned');
           const updatedAt = Date.now();
           this.resources = resources; this.lastUpdated = updatedAt; this.catalogueAvailable = true;
           try {
