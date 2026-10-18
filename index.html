@@ -1,220 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Abhimanyu Learning Space | SFI IMSc</title>
-    
-    <!-- PWA: installation metadata and local offline assets -->
-    <meta name="description" content="Abhimanyu Learning Space: textbooks, notes, and previous question papers for SFI IMSc students at CUSAT.">
-    <meta name="theme-color" content="#0f172a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="IMSc Library">
-    <link rel="manifest" href="./manifest.webmanifest">
-    <link rel="icon" type="image/png" href="./icon-192.png">
-    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-    <link rel="stylesheet" href="./fonts.css">
-    <link rel="stylesheet" href="./styles.css">
-    <script defer src="./pwa.js"></script>
-    <script defer src="./vue.global.prod.js"></script>
-    <script defer src="./papaparse.min.js"></script>
-    <script defer src="./config.js"></script>
-    <script defer src="./core.js"></script>
-    <script defer src="./storage.js"></script>
-    <script defer src="./app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Abhimanyu Learning Space | IMSc Library</title>
+  <meta name="description" content="A focused digital library for IMSc students — textbooks, notes and previous question papers in one place.">
+  <meta name="theme-color" content="#f7f8fc">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="IMSc Library">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="stylesheet" href="./fonts.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./pwa.js"></script>
+  <script defer src="./vue.global.prod.js"></script>
+  <script defer src="./papaparse.min.js"></script>
+  <script defer src="./config.js"></script>
+  <script defer src="./core.js"></script>
+  <script defer src="./storage.js"></script>
+  <script defer src="./app.js"></script>
 </head>
-<body class="antialiased">
-
-<noscript><p style="padding:2rem;text-align:center">Enable JavaScript to browse this digital library.</p></noscript>
+<body>
+<noscript><p class="noscript">Enable JavaScript to browse this digital library.</p></noscript>
 <div id="app" v-cloak>
-    <!-- INSTALLATION CONTROLS -->
-    <nav aria-label="App controls" class="pwa-toolbar bg-slate-900 px-4 pb-4">
-      <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
-        <span class="text-xs font-bold text-white/60">Your campus library, wherever you are.</span>
-        <button v-if="!pwa.installed" @click="installApp" class="px-5 py-3 bg-red-700 rounded-2xl text-sm font-bold">
-          {{ pwa.canInstall ? 'Install app' : 'How to install' }}
-        </button>
-        <span v-else class="text-sm text-green-300">Installed app</span>
+  <div class="announcement" role="status">
+    <div class="shell announcement-inner">
+      <span><span class="status-dot"></span> Built for the IMSc community at CUSAT</span>
+      <button v-if="!pwa.installed" @click="installApp" class="text-button">{{ pwa.canInstall ? 'Install library' : 'How to install' }}</button>
+      <span v-else class="install-ready">Installed on this device</span>
+    </div>
+    <section v-if="showInstallHelp" class="shell install-help" aria-label="Installation instructions">
+      <strong>Keep the library close</strong>
+      <p><b>iPhone / iPad:</b> Open in Safari, tap Share, then Add to Home Screen.</p>
+      <p><b>Android:</b> Use your browser menu and choose Install app or Add to Home screen.</p>
+      <p class="muted">Open this link in a regular browser first if it came from WhatsApp or Instagram.</p>
+      <button @click="showInstallHelp = false" class="text-button">Close</button>
+    </section>
+  </div>
+
+  <header class="hero">
+    <div class="shell hero-grid">
+      <div class="hero-copy">
+        <div class="brand-row">
+          <img alt="Abhimanyu Learning Space" src="./abhimanyu.png" class="brand-mark">
+          <div><span class="eyebrow">SFI IMSc · CUSAT</span><span class="brand-name">Abhimanyu Learning Space</span></div>
+        </div>
+        <p class="eyebrow accent">YOUR CAMPUS LIBRARY, REIMAGINED</p>
+        <h1>Find what you need.<br><em>Keep moving forward.</em></h1>
+        <p class="hero-text">A curated home for textbooks, notes, and previous question papers — made for every IMSc student.</p>
+        <a href="#catalogue" class="primary-button">Explore the catalogue <span>↗</span></a>
       </div>
-      <section v-if="showInstallHelp" class="max-w-6xl mx-auto mt-4 glass-card rounded-2xl p-5 text-sm leading-relaxed" aria-label="Installation instructions">
-        <h2 class="font-bold text-lg mb-2">Keep the library on your Home Screen</h2>
-        <p><strong>iPhone / iPad:</strong> Open in Safari, tap Share, then Add to Home Screen. If shown, enable Open as Web App.</p>
-        <p><strong>Android:</strong> Open in Chrome, then use Install app here when available, or the browser menu’s Install app / Add to Home screen option.</p>
-        <p><strong>Computer:</strong> Use your browser’s app installation control when available. Menu wording varies by browser.</p>
-        <p class="mt-2 text-white/60">If you opened this link inside WhatsApp or Instagram, open it in your regular browser first. Visit online once and wait for “Catalogue ready for offline browsing”. Document files still need internet.</p>
-        <button @click="showInstallHelp = false" class="mt-3 underline">Close installation help</button>
-      </section>
-    </nav>
-    <header class="hero-bg pt-20 pb-24 shadow-2xl border-b border-white/10 text-center">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex justify-center items-center gap-6 mb-8">
-                <img alt="Abhimanyu" width="80" height="80" src="./abhimanyu.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
-                <img alt="SFI IMSc" width="80" height="80" src="./sfi-imsc-logo.png" class="h-20 w-20 rounded-full border-4 border-white/20 shadow-2xl bg-white p-1">
-            </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter uppercase mb-3 text-white">ABHIMANYU LEARNING SPACE</h1>
-            <p class="text-sm md:text-xl text-red-200 font-black tracking-[0.2em] uppercase italic opacity-90">SFI IMSc Digital Library</p>
-        </div>
-    </header>
-
-    <main class="max-w-6xl mx-auto px-4 -mt-12 pb-32">
-        <div class="glass-card rounded-3xl shadow-2xl p-2 mb-10 flex flex-col md:flex-row items-center gap-2">
-            <input v-model="searchQuery" type="search" aria-label="Search resources" placeholder="Search textbooks, modules, or subjects..." 
-                   class="w-full bg-transparent p-5 outline-none text-lg font-medium text-white placeholder-white/30">
-            <div class="px-8 py-4 bg-red-700 text-white rounded-2xl font-black text-xs tracking-widest hidden md:block whitespace-nowrap">
-                {{ filteredResources.length }} RESOURCES
-            </div>
-        </div>
-
-        <!-- CONNECTION, CACHE AND UPDATE STATUS -->
-        <section class="glass-card rounded-2xl p-5 mb-8 text-sm" aria-label="Catalogue status">
-          <div class="flex flex-wrap justify-between items-center gap-3">
-            <div role="status" aria-live="polite">
-              <p class="font-bold">{{ connectionLabel }}</p>
-              <p class="text-white/60 mt-1">{{ catalogueAvailable ? 'Catalogue updated: ' + updatedLabel : 'Load the catalogue online once to save it on this device.' }}</p>
-            </div>
-            <button @click="fetchData" :disabled="!online || refreshing" class="px-5 py-3 rounded-xl bg-white/10 disabled:opacity-50 font-bold">{{ refreshing ? 'Refreshing…' : 'Refresh catalogue' }}</button>
-          </div>
-          <p v-if="loadError" class="text-amber-200 mt-3" role="alert">{{ loadError }}</p>
-          <p v-if="storageWarning || preferenceWarning" class="text-amber-200 mt-3" role="alert">{{ storageWarning || preferenceWarning }}</p>
-          <p v-if="pwa.error" class="text-amber-200 mt-3" role="alert">{{ pwa.error }}</p>
-          <p v-if="!online" class="text-white/60 mt-2">Search and filters work with saved details. Documents and contributions need internet.</p>
-          <div v-if="pwa.updateAvailable" class="mt-4 pt-4 border-t border-white/10 flex flex-wrap gap-3 items-center" role="status">
-            <span>A new app version is ready.</span>
-            <button @click="applyUpdate" :disabled="showUpload || uploading" class="px-5 py-3 rounded-xl bg-red-700 font-bold disabled:opacity-50">Update and reload</button>
-            <span v-if="showUpload" class="text-white/60">Finish or close your contribution first.</span>
-          </div>
-        </section>
-        <!-- SAVED SEMESTER AND FILTERS -->
-        <p class="text-sm text-white/60 mb-4">Your semester and filters are remembered on this device.</p>
-        <div class="space-y-4 mb-12">
-            <div class="flex gap-3 overflow-x-auto no-scrollbar">
-                <button @click="semFilter = 'All'" :class="filterClass(semFilter === 'All')">All Sems</button>
-                <button v-for="n in 10" :key="'sem'+n" @click="semFilter = n.toString()" :class="filterClass(semFilter === n.toString())">SEM {{n}}</button>
-            </div>
-            <div class="flex gap-3 overflow-x-auto no-scrollbar">
-                <button @click="typeFilter = 'All'" :class="filterClass(typeFilter === 'All')">📁 All Types</button>
-                <button v-for="t in ['Textbook', 'PYQ', 'Notes']" :key="t" @click="typeFilter = t" :class="filterClass(typeFilter === t)">{{t === 'Notes' ? 'Notes' : t + 's'}}</button>
-            </div>
-            <div class="flex gap-3 overflow-x-auto no-scrollbar">
-                <button @click="subjectFilter = 'All'" :class="filterClass(subjectFilter === 'All')">🎓 All Subjects</button>
-                <button v-for="sub in subjectStats" :key="sub.name" @click="subjectFilter = sub.name" :class="filterClass(subjectFilter === sub.name)">
-                    {{sub.name}} ({{sub.count}})
-                </button>
-            </div>
-        </div>
-
-        <div v-if="loading" class="text-center py-24">
-            <div class="animate-spin rounded-full h-14 w-14 border-b-4 border-red-700 mx-auto"></div>
-            <p class="mt-6 text-red-200 font-black text-xs uppercase tracking-[0.3em]">Mapping Database...</p>
-        </div>
-
-        <section v-else-if="!catalogueAvailable" class="glass-card rounded-3xl p-10 text-center" role="status">
-            <h2 class="font-bold text-xl mb-3">No saved catalogue yet</h2>
-            <p class="text-white/60">Connect to the internet and use Refresh catalogue. Once saved, you can browse it offline.</p>
-        </section>
-        <section v-else-if="filteredResources.length === 0" class="glass-card rounded-3xl p-10 text-center" role="status">
-            <h2 class="font-bold text-xl mb-3">No matching resources</h2>
-            <p class="text-white/60">Try another semester, subject, or search term.</p>
-            <button @click="resetFilters" class="mt-4 underline font-bold">Clear filters</button>
-        </section>
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div v-for="item in filteredResources" :key="item.id"
-                 class="glass-card rounded-[2.5rem] p-8 card-hover transition-all duration-300 border-l-8 border-red-700">
-                <div class="flex justify-between items-center mb-6">
-                    <span class="text-[10px] font-black px-4 py-1.5 rounded-full bg-red-700 text-white uppercase">Sem {{item.semester}}</span>
-                    <span class="text-[11px] font-bold text-white/40 uppercase tracking-widest">{{item.type}}</span>
-                </div>
-                <h3 class="text-2xl font-extrabold text-white leading-tight mb-2 min-h-[3rem]">{{item.title}}</h3>
-                <p class="text-red-300/60 text-[10px] font-bold uppercase tracking-widest mb-8">{{item.subject}}</p>
-                <div class="pt-6 border-t border-white/10">
-                    <a v-if="item.link" :href="item.link" @click="openResource" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-3 font-black text-xs text-red-400 tracking-widest uppercase hover:text-white transition-colors">
-                        {{ online ? 'Access Resource →' : 'Document needs internet' }}
-                    </a>
-                    <span v-else class="text-sm text-amber-200">Link needs correction by the subcommittee.</span>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <button ref="contributeButton" @click="showUpload = true" :disabled="!online" class="contribute-button disabled:opacity-50 fixed bottom-8 right-8 bg-red-700 text-white px-8 py-5 rounded-3xl shadow-2xl hover:scale-105 transition-all z-50 font-black uppercase tracking-widest text-xs">
-        {{ online ? 'Contribute' : 'Contribute when online' }}
-    </button>
-
-    <div v-if="showUpload" role="dialog" aria-modal="true" aria-labelledby="upload-heading" @keydown.esc="closeUpload" @keydown="trapDialog" class="fixed inset-0 bg-slate-900/95 backdrop-blur-xl z-[100] flex items-center justify-center p-4">
-        <div class="glass-card border-white/20 rounded-[3rem] max-w-xl w-full p-8 md:p-12 relative overflow-y-auto max-h-[90vh]">
-            <button @click="closeUpload" :disabled="uploading" aria-label="Close contribution form" class="absolute top-8 right-8 text-white/40 hover:text-white text-4xl">&times;</button>
-            <h2 id="upload-heading" class="text-3xl font-black text-white mb-2 uppercase italic tracking-tighter">Add to Library</h2>
-            
-            <div class="bg-white/5 rounded-2xl p-4 mb-6 text-[10px] leading-relaxed text-white/60 border border-white/10">
-                <p class="font-black text-red-400 mb-1">⚠️ GUIDE / നിർദ്ദേശം:</p>
-                <p>1. Google Drive ലിങ്ക് 'Anyone with the link can view' എന്ന് സെറ്റ് ചെയ്യുക.</p>
-                <p>2. Ensure Drive link is set to 'Anyone with the link' before submitting.</p>
-            </div>
-
-            <form @submit.prevent="submitForm" class="space-y-4">
-                <input ref="resourceTitle" aria-label="Resource title" v-model="newEntry.title" required placeholder="Resource Title" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
-                <div class="grid grid-cols-2 gap-4">
-                    <select aria-label="Semester" v-model="newEntry.semester" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
-                        <option v-for="n in 10" :key="'opt'+n" :value="n" class="bg-slate-900">Sem {{n}}</option>
-                    </select>
-                    <select aria-label="Resource type" v-model="newEntry.type" class="bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
-                        <option value="Notes" class="bg-slate-900">Notes</option>
-                        <option value="PYQ" class="bg-slate-900">PYQ</option>
-                        <option value="Textbook" class="bg-slate-900">Textbook</option>
-                    </select>
-                </div>
-                <input aria-label="Subject" v-model="newEntry.subject" required placeholder="Subject (e.g. Mathematics)" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
-                <div class="space-y-2">
-                    <input type="url" aria-label="Google Drive link" v-model="newEntry.link" @input="validateLink" required placeholder="Google Drive Link" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
-                    <p v-if="linkError" class="text-red-500 text-[10px] font-bold uppercase tracking-widest pl-2">Invalid Drive Link</p>
-                    <a v-if="newEntry.link && !linkError" :href="newEntry.link" target="_blank" rel="noopener noreferrer" class="text-[10px] font-black text-blue-400 uppercase tracking-widest pl-2">👁️ Preview Link</a>
-                </div>
-                <button type="submit" :disabled="uploading || linkError || !online" class="w-full bg-red-700 text-white font-black py-5 rounded-2xl shadow-xl disabled:opacity-50">
-                    {{ uploading ? 'SENDING...' : (!online ? 'CONNECT TO SUBMIT' : 'SUBMIT TO SUBCOMMITTEE') }}
-                </button>
-                <p v-if="formError" class="text-sm text-amber-200" role="alert">{{ formError }}</p>
-                <p class="text-xs text-white/60">Submissions are sent online to the existing subcommittee endpoint. Receipt cannot be verified by this page.</p>
-            </form>
-        </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orb orb-one"></div><div class="orb orb-two"></div>
+        <div class="quote-card"><span class="quote-mark">“</span><p>Knowledge grows when it is shared.</p><small>— The IMSc community</small></div>
+        <div class="hero-logo"><img alt="SFI IMSc" src="./sfi-imsc-logo.png"></div>
+      </div>
     </div>
+  </header>
 
-    <div v-if="showSuccess" role="status" aria-live="polite" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] w-full max-w-md px-4">
-        <div class="glass-card bg-green-500/20 border-green-500/50 p-6 rounded-3xl text-center shadow-2xl success-toast">
-            <p class="text-white font-black uppercase tracking-widest text-sm">Request sent</p><p class="text-sm text-white/80 mt-2">Receipt is not confirmed. Contact the subcommittee if your resource does not appear.</p>
-        </div>
+  <main id="catalogue" class="shell main-content">
+    <section class="catalogue-intro">
+      <div><span class="eyebrow accent">THE COLLECTION</span><h2>Study smarter, together.</h2><p class="muted">Browse resources by semester, subject or type.</p></div>
+      <div class="catalogue-stat"><strong>{{ filteredResources.length }}</strong><span>resources<br>available</span></div>
+    </section>
+
+    <section class="search-panel" aria-label="Search resources">
+      <div class="search-field"><span aria-hidden="true">⌕</span><input v-model="searchQuery" type="search" aria-label="Search resources" placeholder="Search by title, subject or keyword..."></div>
+      <button @click="resetFilters" class="clear-button">Clear filters</button>
+    </section>
+
+    <section class="status-panel" aria-label="Catalogue status">
+      <div><span class="status-dot" :class="{ offline: !online }"></span><strong>{{ connectionLabel }}</strong><p>{{ catalogueAvailable ? 'Last updated ' + updatedLabel : 'Connect once to save the catalogue for offline browsing.' }}</p></div>
+      <button @click="fetchData" :disabled="!online || refreshing" class="secondary-button">{{ refreshing ? 'Refreshing...' : 'Refresh catalogue' }}</button>
+      <p v-if="loadError || storageWarning || preferenceWarning || pwa.error" class="error-line" role="alert">{{ loadError || storageWarning || preferenceWarning || pwa.error }}</p>
+    </section>
+
+    <section class="filters" aria-label="Filter resources">
+      <div class="filter-group"><span>Semester</span><div class="filter-scroll"><button @click="semFilter = 'All'" :class="{ active: semFilter === 'All' }">All</button><button v-for="n in 10" :key="'sem'+n" @click="semFilter = n.toString()" :class="{ active: semFilter === n.toString() }">Sem {{n}}</button></div></div>
+      <div class="filter-group"><span>Format</span><div class="filter-scroll"><button @click="typeFilter = 'All'" :class="{ active: typeFilter === 'All' }">All formats</button><button v-for="t in ['Textbook', 'PYQ', 'Notes']" :key="t" @click="typeFilter = t" :class="{ active: typeFilter === t }">{{ t === 'PYQ' ? 'Past papers' : t }}</button></div></div>
+      <div v-if="subjectStats.length" class="filter-group"><span>Subject</span><div class="filter-scroll"><button @click="subjectFilter = 'All'" :class="{ active: subjectFilter === 'All' }">All subjects</button><button v-for="sub in subjectStats" :key="sub.name" @click="subjectFilter = sub.name" :class="{ active: subjectFilter === sub.name }">{{sub.name}}</button></div></div>
+    </section>
+
+    <div v-if="loading" class="empty-state"><div class="loader"></div><p>Loading your library...</p></div>
+    <section v-else-if="!catalogueAvailable" class="empty-state"><span class="empty-icon">◎</span><h2>Your catalogue is waiting.</h2><p>Connect to the internet and refresh to load the latest resources.</p></section>
+    <section v-else-if="filteredResources.length === 0" class="empty-state"><span class="empty-icon">⌕</span><h2>No matching resources</h2><p>Try another semester, subject, or search term.</p><button @click="resetFilters" class="primary-button">Reset search</button></section>
+    <div v-else class="resource-grid">
+      <article v-for="item in filteredResources" :key="item.id" class="resource-card">
+        <div class="card-top"><span class="tag">SEM {{item.semester}}</span><span class="format">{{item.type}}</span></div>
+        <h3>{{item.title}}</h3><p class="subject">{{item.subject}}</p>
+        <div class="card-footer"><a v-if="item.link" :href="item.link" @click="openResource" target="_blank" rel="noopener noreferrer">{{ online ? 'Open resource' : 'Needs internet' }} <span>↗</span></a><span v-else class="broken-link">Link needs an update</span></div>
+      </article>
     </div>
+  </main>
 
-    <footer class="glass-card border-t border-white/10 pt-20 pb-10 mt-20">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-16 mb-16">
-                <div>
-                    <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs mb-6">🏛️ About Us</h4>
-                    <p class="text-white/60 text-sm leading-relaxed font-medium">
-                        A digital initiative by the <span class="text-white">SFI IMSc Subcommittee</span>. Named in honor of Comrade Abhimanyu, this platform democratizes access to verified academic resources for every student.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs mb-6">📬 Contact</h4>
-                    <p class="text-white/60 text-sm font-bold tracking-tight italic mb-2">sfiimscsubcommittee25@gmail.com</p>
-                    <p class="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">CUSAT</p>
-                </div>
-                <div>
-                    <h4 class="text-red-600 font-black uppercase tracking-[0.2em] text-xs mb-6">🔗 Community</h4>
-                    <div class="flex flex-col gap-3">
-                        <a href="https://whatsapp.com/channel/0029VaesYjiHgZWZT1NwWo1z" target="_blank" rel="noopener noreferrer" class="glass-card px-5 py-3 rounded-2xl text-[11px] font-bold text-white uppercase hover:bg-red-700 text-center">WhatsApp</a>
-                        <a href="https://www.instagram.com/sfi_imsc_subcommittee_cusat" target="_blank" rel="noopener noreferrer" class="glass-card px-5 py-3 rounded-2xl text-[11px] font-bold text-white uppercase hover:bg-red-700 text-center">Instagram</a>
-                    </div>
-                </div>
-            </div>
-            <div class="pt-10 border-t border-white/5 text-center">
-                <p class="text-[10px] font-black text-white/20 uppercase tracking-[0.5em]">&copy; 2026 SFI IMSc Subcommittee • CUSAT</p>
-                <p class="text-xs text-white/50 mt-4">Saved catalogue details are stored on this device. Downloading document files is a separate online action.</p>
-                <button @click="checkUpdates" :disabled="!online || pwa.checking" class="text-xs underline text-white/60 mt-4 disabled:opacity-50">{{ pwa.checking ? 'Checking…' : 'Check for app updates' }}</button>
-            </div>
-        </div>
-    </footer>
+  <section class="contribute-band"><div class="shell contribute-inner"><div><span class="eyebrow accent">MAKE IT BETTER</span><h2>Have something to share?</h2><p class="muted">Help the next student find the right resource faster.</p></div><button @click="showUpload = true" :disabled="!online" class="primary-button">Contribute a resource <span>↗</span></button></div></section>
+
+  <footer class="footer"><div class="shell footer-grid"><div><div class="brand-row"><img alt="Abhimanyu Learning Space" src="./abhimanyu.png" class="brand-mark small"><span class="brand-name">Abhimanyu Learning Space</span></div><p class="muted">A digital initiative by the SFI IMSc Subcommittee, CUSAT.</p></div><div><span class="eyebrow">CONNECT</span><a href="https://whatsapp.com/channel/0029VaesYjiHgZWZT1NwWo1z" target="_blank" rel="noopener noreferrer">WhatsApp community ↗</a><a href="https://www.instagram.com/sfi_imsc_subcommittee_cusat" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div><div><span class="eyebrow">CONTACT</span><a href="mailto:sfiimscsubcommittee25@gmail.com">sfiimscsubcommittee25@gmail.com</a><p class="muted">© 2026 SFI IMSc Subcommittee</p></div></div></footer>
+
+  <div v-if="showUpload" role="dialog" aria-modal="true" aria-labelledby="upload-heading" @keydown.esc="closeUpload" @keydown="trapDialog" class="modal-backdrop"><div class="modal-card"><button @click="closeUpload" :disabled="uploading" aria-label="Close contribution form" class="modal-close">×</button><span class="eyebrow accent">CONTRIBUTE</span><h2 id="upload-heading">Add to the library.</h2><p class="muted">Share a resource with your classmates. Please use a Google Drive link set to “Anyone with the link can view”.</p><form @submit.prevent="submitForm" class="contribution-form"><label>Resource title<input ref="resourceTitle" v-model="newEntry.title" required placeholder="e.g. Linear Algebra — Unit 2"></label><div class="form-row"><label>Semester<select v-model="newEntry.semester"><option v-for="n in 10" :key="'opt'+n" :value="n">Sem {{n}}</option></select></label><label>Format<select v-model="newEntry.type"><option>Notes</option><option>PYQ</option><option>Textbook</option></select></label></div><label>Subject<input v-model="newEntry.subject" required placeholder="e.g. Mathematics"></label><label>Google Drive link<input type="url" v-model="newEntry.link" @input="validateLink" required placeholder="https://drive.google.com/..." ></label><p v-if="linkError" class="error-line">Please enter a valid Google Drive link.</p><button type="submit" :disabled="uploading || linkError || !online" class="primary-button full-width">{{ uploading ? 'Sending...' : 'Submit resource' }}</button><p v-if="formError" class="error-line" role="alert">{{ formError }}</p></form></div></div>
+  <div v-if="showSuccess" role="status" class="toast"><strong>Request sent</strong><span>Receipt is not confirmed. The subcommittee will review your resource.</span></div>
 </div>
-
 </body>
 </html>
